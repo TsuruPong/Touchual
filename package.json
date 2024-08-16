@@ -23,6 +23,7 @@
     "@graphql-codegen/typescript-resolvers": "^4.2.1",
     "@graphql-tools/schema": "^10.0.4",
     "@nextui-org/react": "^2.2.10",
+    "@prisma/client": "^5.18.0",
     "@supabase/supabase-js": "^2.45.1",
     "framer-motion": "^11.0.24",
     "graphql": "^16.9.0",
