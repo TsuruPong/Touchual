@@ -1,0 +1,8 @@
+type Sentence {
+  text: String
+  ruby: String
+}
+
+type Query {
+  sentence: Sentence
+}
