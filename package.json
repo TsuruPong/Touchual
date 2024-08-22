@@ -10,7 +10,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "seed": "node prisma/seed.ts",
-    "codegen": "graphql-codegen --config gqlcodegen.ts"
+    "codegen": "graphql-codegen --config gqlcodegen.ts --verbose"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
