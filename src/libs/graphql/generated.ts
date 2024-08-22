@@ -19,7 +19,7 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  sentence?: Maybe<Sentence>;
+  GetSentence?: Maybe<Sentence>;
 };
 
 export type Sentence = {
@@ -31,12 +31,12 @@ export type Sentence = {
 export type GetSentenceQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSentenceQuery = { __typename?: 'Query', sentence?: { __typename?: 'Sentence', text?: string | null, ruby?: string | null } | null };
+export type GetSentenceQuery = { __typename?: 'Query', GetSentence?: { __typename?: 'Sentence', text?: string | null, ruby?: string | null } | null };
 
 
 export const GetSentenceDocument = gql`
     query GetSentence {
-  sentence {
+  GetSentence {
     text
     ruby
   }
