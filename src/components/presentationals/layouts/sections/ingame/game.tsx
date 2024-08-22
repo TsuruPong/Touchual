@@ -6,16 +6,13 @@ import { css } from "@emotion/react";
 import { Suggestion } from "./suggestion";
 import { InGameTimer } from "./timer";
 import { Noto_Sans_Javanese } from "next/font/google";
+import { Sentence, useGetSentenceQuery } from "@/libs/graphql/generated";
 
 const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
 export const Game = React.memo(() => {
-  type Sentence = {
-    text: string;
-    ruby: string;
-  };
-
   const [sentence, setSentence] = React.useState<Sentence>();
+  const { data, error, loading } = useGetSentenceQuery();
 
   const handleCompleteNotice = () => {
     fetchSentence();
@@ -26,12 +23,15 @@ export const Game = React.memo(() => {
   };
 
   const fetchSentence = () => {
-    const sentence = {
-      text: "太陽系の起源は長い間さまざまな憶測を呼んできた",
-      ruby: "たいようけいのきげんはながいあいださまざまなおくそくをよんできた",
-    };
-    setSentence((prev) => sentence);
+    if (error) console.error(error);
+    if (loading) return;
+    const sentence = data?.GetSentence || undefined;
+    setSentence(() => sentence);
   };
+
+  React.useEffect(() => {
+    fetchSentence();
+  }, []);
 
   const navigateToResult = () => {};
 
@@ -54,10 +54,12 @@ export const Game = React.memo(() => {
             </div>
           </div>
           <div className="select-none text text-2xl w-full h-[70px] flex items-center">
-            <Suggestion
-              sentence={sentence?.ruby}
-              callback={handleCompleteNotice}
-            />
+            {sentence?.ruby && (
+              <Suggestion
+                sentence={sentence.ruby}
+                callback={handleCompleteNotice}
+              />
+            )}
           </div>
         </div>
       </div>
