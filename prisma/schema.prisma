@@ -9,8 +9,19 @@ generator client {
 }
 
 model Sentences {
-  text String
-  ruby String
+  text               String              @unique
+  ruby               String              @unique
+  SentenceIndicators SentenceIndicators?
 
-  @@id([text, ruby], name: "sentence_identifer")
+  @@id([text, ruby])
+}
+
+model SentenceIndicators {
+  text       String    @unique
+  ruby       String    @unique
+  sentence   Sentences @relation(fields: [text, ruby], references: [text, ruby])
+  level      Int
+  difficulty Int
+
+  @@id([text, ruby])
 }
