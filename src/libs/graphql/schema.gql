@@ -3,6 +3,9 @@ type Sentence {
   ruby: String
 }
 
-type Query {
-  sentence: Sentence
+query GetSentence {
+  sentence {
+    text
+    ruby
+  }
 }
