@@ -9,9 +9,10 @@
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "codegen": "graphql-codegen --config gqlcodegen.ts --verbose",
-    "migrate": "dotenv -e .env.local -- npx prisma migrate dev --name migration",
-    "seed": "dotenv -e .env.local -- npx prisma db seed"
+    "gql:codegen": "graphql-codegen --config gqlcodegen.ts --verbose",
+    "prisma:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name migration",
+    "prisma:seed": "dotenv -e .env.local -- npx prisma db seed",
+    "prisma:migrateup": "npm-run-all --serial prisma:migrate prisma:seed"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
