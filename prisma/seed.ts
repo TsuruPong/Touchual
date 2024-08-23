@@ -1,7 +1,8 @@
-import prisma from "@/libs/prisma/db";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 async function main() {
-    console.log("seeding data...");
     await prisma.sentences.createMany({
         data: [
             {
@@ -44,6 +45,5 @@ main().catch(e => {
     console.error(e);
     process.exit(1);
 }).finally(async() => {
-    console.log("compleate!");
     await prisma.$disconnect();
 })

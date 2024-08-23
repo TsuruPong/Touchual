@@ -1,5 +1,5 @@
 {
-  "name": "typing-game",
+  "name": "touchual",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,10 +9,7 @@
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "codegen": "graphql-codegen --config gqlcodegen.ts --verbose",
-    "prisma:migrate": "dotenv -e .env.local -- npx prisma migrate dev --name migration",
-    "prisma:seed": "ts-node prisma/seed.ts",
-    "prisma:migrateup": "npm-run-all prisma:migrate prisma:seed"
+    "codegen": "graphql-codegen --config gqlcodegen.ts --verbose"
   },
   "dependencies": {
     "@apollo/client": "^3.11.4",
@@ -66,5 +63,10 @@
     "tailwindcss": "^3.4.0",
     "ts-node": "^10.9.2",
     "typescript": "^5"
+  },
+  "prisma": {
+    "generate": "npx  dotenv -e .env.local -- npx prisma generate",
+    "migrate": "npx dotenv -e .env.local -- npx prisma migrate dev --name migration",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   }
 }
