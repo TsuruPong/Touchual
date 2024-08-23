@@ -12,7 +12,7 @@ import {
   Letter,
   LetterKind,
 } from "@/components/presentationals/elements/letter/letter";
-import { Incollect, UseIncollectStore } from "@/hooks/useIncollectStore";
+import { Incollect, useIncollectStore } from "@/hooks/useIncollectStore";
 
 type SuggestionProp = {
   sentence?: string;
@@ -27,7 +27,7 @@ export const Suggestion: React.FC<SuggestionProp> = ({
   const { collects, add, clean } = useCollectStore();
   const [suggestion, setSuggestion] = React.useState<string>("");
   const { inputs, clear } = useKeyboardInput();
-  const { incollect, store, reset } = UseIncollectStore();
+  const { incollect, store, reset } = useIncollectStore();
 
   React.useEffect(() => {
     if (!letter) return;

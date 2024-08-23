@@ -11,7 +11,7 @@ type State = {
     reset: () => void
 }
 
-export const UseIncollectStore = create<State>()((set) => ({
+export const useIncollectStore = create<State>()((set) => ({
     incollect: { key: undefined, index: undefined },
     store: (incollect: Incollect) => 
         set(() => {
