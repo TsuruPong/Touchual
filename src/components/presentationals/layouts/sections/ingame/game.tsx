@@ -12,7 +12,7 @@ const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
 export const Game = React.memo(() => {
   const [sentence, setSentence] = React.useState<Sentence>();
-  const { data, error, loading } = useGetSentenceQuery();
+  const { data, error, loading, refetch } = useGetSentenceQuery();
 
   const handleCompleteNotice = () => {
     fetchSentence();
@@ -22,12 +22,16 @@ export const Game = React.memo(() => {
     navigateToResult();
   };
 
-  const fetchSentence = () => {
-    if (error) console.error(error);
-    if (loading) return;
+  const fetchSentence = refetch;
+
+  React.useEffect(() => {
     const sentence = data?.GetSentence || undefined;
     setSentence(() => sentence);
-  };
+  }, [loading]);
+
+  React.useEffect(() => {
+    console.error(error);
+  }, [error]);
 
   React.useEffect(() => {
     fetchSentence();
