@@ -19,24 +19,41 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  GetSentence?: Maybe<Sentence>;
+  getApproxSentence?: Maybe<SentenceIndicators>;
+};
+
+
+export type QueryGetApproxSentenceArgs = {
+  difficulty: Scalars['Float']['input'];
+  level: Scalars['Int']['input'];
 };
 
 export type Sentence = {
   __typename?: 'Sentence';
-  ruby?: Maybe<Scalars['String']['output']>;
-  text?: Maybe<Scalars['String']['output']>;
+  ruby: Scalars['String']['output'];
+  text: Scalars['String']['output'];
 };
 
-export type GetSentenceQueryVariables = Exact<{ [key: string]: never; }>;
+export type SentenceIndicators = {
+  __typename?: 'SentenceIndicators';
+  difficulty: Scalars['Float']['output'];
+  level: Scalars['Int']['output'];
+  ruby: Scalars['String']['output'];
+  text: Scalars['String']['output'];
+};
+
+export type GetApproxSentenceQueryVariables = Exact<{
+  level: Scalars['Int']['input'];
+  difficulty: Scalars['Float']['input'];
+}>;
 
 
-export type GetSentenceQuery = { __typename?: 'Query', GetSentence?: { __typename?: 'Sentence', text?: string | null, ruby?: string | null } | null };
+export type GetApproxSentenceQuery = { __typename?: 'Query', getApproxSentence?: { __typename?: 'SentenceIndicators', text: string, ruby: string } | null };
 
 
-export const GetSentenceDocument = gql`
-    query GetSentence {
-  GetSentence {
+export const GetApproxSentenceDocument = gql`
+    query getApproxSentence($level: Int!, $difficulty: Float!) {
+  getApproxSentence(level: $level, difficulty: $difficulty) {
     text
     ruby
   }
@@ -44,33 +61,35 @@ export const GetSentenceDocument = gql`
     `;
 
 /**
- * __useGetSentenceQuery__
+ * __useGetApproxSentenceQuery__
  *
- * To run a query within a React component, call `useGetSentenceQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSentenceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetApproxSentenceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApproxSentenceQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetSentenceQuery({
+ * const { data, loading, error } = useGetApproxSentenceQuery({
  *   variables: {
+ *      level: // value for 'level'
+ *      difficulty: // value for 'difficulty'
  *   },
  * });
  */
-export function useGetSentenceQuery(baseOptions?: Apollo.QueryHookOptions<GetSentenceQuery, GetSentenceQueryVariables>) {
+export function useGetApproxSentenceQuery(baseOptions: Apollo.QueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables> & ({ variables: GetApproxSentenceQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetSentenceQuery, GetSentenceQueryVariables>(GetSentenceDocument, options);
+        return Apollo.useQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
       }
-export function useGetSentenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSentenceQuery, GetSentenceQueryVariables>) {
+export function useGetApproxSentenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetSentenceQuery, GetSentenceQueryVariables>(GetSentenceDocument, options);
+          return Apollo.useLazyQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
         }
-export function useGetSentenceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetSentenceQuery, GetSentenceQueryVariables>) {
+export function useGetApproxSentenceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetSentenceQuery, GetSentenceQueryVariables>(GetSentenceDocument, options);
+          return Apollo.useSuspenseQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
         }
-export type GetSentenceQueryHookResult = ReturnType<typeof useGetSentenceQuery>;
-export type GetSentenceLazyQueryHookResult = ReturnType<typeof useGetSentenceLazyQuery>;
-export type GetSentenceSuspenseQueryHookResult = ReturnType<typeof useGetSentenceSuspenseQuery>;
-export type GetSentenceQueryResult = Apollo.QueryResult<GetSentenceQuery, GetSentenceQueryVariables>;
+export type GetApproxSentenceQueryHookResult = ReturnType<typeof useGetApproxSentenceQuery>;
+export type GetApproxSentenceLazyQueryHookResult = ReturnType<typeof useGetApproxSentenceLazyQuery>;
+export type GetApproxSentenceSuspenseQueryHookResult = ReturnType<typeof useGetApproxSentenceSuspenseQuery>;
+export type GetApproxSentenceQueryResult = Apollo.QueryResult<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>;

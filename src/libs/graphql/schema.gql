@@ -1,25 +1,22 @@
 type Sentence {
-  text: String!
-  ruby: String!
-  indicator: SentenceIndicators!
+    text: String!
+    ruby: String!
 }
 
 type SentenceIndicators {
-  level: Int!
-  difficulty: Int!
+    text: String!
+    ruby: String!
+    level: Int!
+    difficulty: Float!
 }
 
 type Query {
-  getApproxSentence(level: Int!, difficulty: Int!): Sentence
+    getApproxSentence(level: Int!, difficulty: Float!): SentenceIndicators
 }
 
-query getApproxSentence($level: Int!, $difficulty: Int!) {
-  getApproxSentence(level: $level, difficulty: $difficulty) {
-    text
-    ruby
-    indicator {
-      level
-      difficulty
+query getApproxSentence($level: Int!, $difficulty: Float!) {
+    getApproxSentence(level: $level, difficulty: $difficulty) {
+        text
+        ruby
     }
-  }
 }
