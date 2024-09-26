@@ -149,11 +149,11 @@ export const youons: Map<string, KanaSymbol> = new Map<string, KanaSymbol>([
     [Hiragana.KYO, { shiins: ['ky'], boin: 'o', origin: gojuons.get(Hiragana.KI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // ぎゃ行
-    [Hiragana.GYA, { shiins: ['gy'], boin: 'a', origin: gojuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYA) }],
-    [Hiragana.GYI, { shiins: ['gy'], boin: 'i', origin: gojuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XI) }],
-    [Hiragana.GYU, { shiins: ['gy'], boin: 'u', origin: gojuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYU) }],
-    [Hiragana.GYE, { shiins: ['gy'], boin: 'e', origin: gojuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XE) }],
-    [Hiragana.GYO, { shiins: ['gy'], boin: 'o', origin: gojuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYO) }],
+    [Hiragana.GYA, { shiins: ['gy'], boin: 'a', origin: dakuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYA) }],
+    [Hiragana.GYI, { shiins: ['gy'], boin: 'i', origin: dakuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XI) }],
+    [Hiragana.GYU, { shiins: ['gy'], boin: 'u', origin: dakuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYU) }],
+    [Hiragana.GYE, { shiins: ['gy'], boin: 'e', origin: dakuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XE) }],
+    [Hiragana.GYO, { shiins: ['gy'], boin: 'o', origin: dakuons.get(Hiragana.GI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // くぁ行
     [Hiragana.QA, { shiins: ['q'], boin: 'a', origin: gojuons.get(Hiragana.KU), kogaki: kogakis.get(Hiragana.XA) }],
@@ -169,11 +169,11 @@ export const youons: Map<string, KanaSymbol> = new Map<string, KanaSymbol>([
     [Hiragana.SHO, { shiins: ['sh'], boin: 'o', origin: gojuons.get(Hiragana.SI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // じゃ行
-    [Hiragana.JA, { shiins: ['j', 'jy'], boin: 'a', origin: gojuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYA) }],
-    [Hiragana.JYI, { shiins: ['jy'], boin: 'i', origin: gojuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XI) }],
-    [Hiragana.JU, { shiins: ['j', 'jy'], boin: 'u', origin: gojuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYU) }],
-    [Hiragana.JE, { shiins: ['j', 'jy'], boin: 'e', origin: gojuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XE) }],
-    [Hiragana.JO, { shiins: ['j', 'jy'], boin: 'o', origin: gojuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYO) }],
+    [Hiragana.JA, { shiins: ['j', 'jy'], boin: 'a', origin: dakuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYA) }],
+    [Hiragana.JYI, { shiins: ['jy'], boin: 'i', origin: dakuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XI) }],
+    [Hiragana.JU, { shiins: ['j', 'jy'], boin: 'u', origin: dakuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYU) }],
+    [Hiragana.JE, { shiins: ['j', 'jy'], boin: 'e', origin: dakuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XE) }],
+    [Hiragana.JO, { shiins: ['j', 'jy'], boin: 'o', origin: dakuons.get(Hiragana.ZI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // ちゃ行
     [Hiragana.CHA, { shiins: ['ch', 'ty'], boin: 'a', origin: gojuons.get(Hiragana.TI), kogaki: kogakis.get(Hiragana.XYA) }],
@@ -183,11 +183,11 @@ export const youons: Map<string, KanaSymbol> = new Map<string, KanaSymbol>([
     [Hiragana.CHO, { shiins: ['ch', 'ty'], boin: 'o', origin: gojuons.get(Hiragana.TI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // ぢゃ行
-    [Hiragana.DYA, { shiins: ['dy'], boin: 'a', origin: gojuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYA) }],
-    [Hiragana.DYI, { shiins: ['dy'], boin: 'i', origin: gojuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XI) }],
-    [Hiragana.DYU, { shiins: ['dy'], boin: 'u', origin: gojuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYU) }],
-    [Hiragana.DYE, { shiins: ['dy'], boin: 'e', origin: gojuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XE) }],
-    [Hiragana.DYO, { shiins: ['dy'], boin: 'o', origin: gojuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYO) }],
+    [Hiragana.DYA, { shiins: ['dy'], boin: 'a', origin: dakuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYA) }],
+    [Hiragana.DYI, { shiins: ['dy'], boin: 'i', origin: dakuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XI) }],
+    [Hiragana.DYU, { shiins: ['dy'], boin: 'u', origin: dakuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYU) }],
+    [Hiragana.DYE, { shiins: ['dy'], boin: 'e', origin: dakuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XE) }],
+    [Hiragana.DYO, { shiins: ['dy'], boin: 'o', origin: dakuons.get(Hiragana.DI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // つぁ行
     [Hiragana.TSA, { shiins: ['ts'], boin: 'a', origin: gojuons.get(Hiragana.TU), kogaki: kogakis.get(Hiragana.XA) }],
@@ -210,18 +210,18 @@ export const youons: Map<string, KanaSymbol> = new Map<string, KanaSymbol>([
     [Hiragana.HYO, { shiins: ['hy'], boin: 'o', origin: gojuons.get(Hiragana.HI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // びゃ行
-    [Hiragana.BYA, { shiins: ['by'], boin: 'a', origin: gojuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYA) }],
-    [Hiragana.BYI, { shiins: ['by'], boin: 'i', origin: gojuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XI) }],    
-    [Hiragana.BYU, { shiins: ['by'], boin: 'u', origin: gojuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYU) }],
-    [Hiragana.BYE, { shiins: ['by'], boin: 'e', origin: gojuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XE) }],
-    [Hiragana.BYO, { shiins: ['by'], boin: 'o', origin: gojuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYO) }],
+    [Hiragana.BYA, { shiins: ['by'], boin: 'a', origin: dakuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYA) }],
+    [Hiragana.BYI, { shiins: ['by'], boin: 'i', origin: dakuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XI) }],    
+    [Hiragana.BYU, { shiins: ['by'], boin: 'u', origin: dakuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYU) }],
+    [Hiragana.BYE, { shiins: ['by'], boin: 'e', origin: dakuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XE) }],
+    [Hiragana.BYO, { shiins: ['by'], boin: 'o', origin: dakuons.get(Hiragana.BI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // ぴゃ行
-    [Hiragana.PYA, { shiins: ['py'], boin: 'a', origin: gojuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYA) }],
-    [Hiragana.PYI, { shiins: ['py'], boin: 'i', origin: gojuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XI) }],    
-    [Hiragana.PYU, { shiins: ['py'], boin: 'u', origin: gojuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYU) }],
-    [Hiragana.PYE, { shiins: ['py'], boin: 'e', origin: gojuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XE) }],
-    [Hiragana.PYO, { shiins: ['py'], boin: 'o', origin: gojuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYO) }],
+    [Hiragana.PYA, { shiins: ['py'], boin: 'a', origin: handakuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYA) }],
+    [Hiragana.PYI, { shiins: ['py'], boin: 'i', origin: handakuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XI) }],    
+    [Hiragana.PYU, { shiins: ['py'], boin: 'u', origin: handakuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYU) }],
+    [Hiragana.PYE, { shiins: ['py'], boin: 'e', origin: handakuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XE) }],
+    [Hiragana.PYO, { shiins: ['py'], boin: 'o', origin: handakuons.get(Hiragana.PI), kogaki: kogakis.get(Hiragana.XYO) }],
 
     // ふぁ行
     [Hiragana.FA, { shiins: ['f'], boin: 'a', origin: gojuons.get(Hiragana.HU), kogaki: kogakis.get(Hiragana.XA) }],
