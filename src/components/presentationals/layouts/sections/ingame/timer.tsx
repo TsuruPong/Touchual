@@ -1,5 +1,6 @@
 "use client";
 
+import { TimerKind, useTimer } from "@/hooks/useTimer";
 import * as React from "react";
 
 type InGameTimerProp = {
@@ -7,26 +8,19 @@ type InGameTimerProp = {
 };
 
 export const InGameTimer: React.FC<InGameTimerProp> = ({ callback }) => {
-  const [time, setTime] = React.useState<number>(3);
+  const { time, start } = useTimer(TimerKind.SUB, 60);
   const ref = React.useRef(time);
 
   React.useEffect(() => {
-    ref.current = time;
-  }, [time]);
+    start();
+  }, []);
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      if (ref.current <= 0) {
-        callback();
-      } else {
-        setTime((prev) => prev - 1);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+    ref.current = time;
+    if (time <= 0) {
+      callback();
+    }
+  }, [time]);
 
   return <label className="text-amber-400">{time}</label>;
 };

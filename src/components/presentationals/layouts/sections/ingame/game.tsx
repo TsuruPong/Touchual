@@ -38,7 +38,7 @@ export const Game = React.memo(() => {
     }, [loading]);
 
     React.useEffect(() => {
-        console.error(error);
+        //if (!error) console.error(error);
     }, [error]);
 
     React.useEffect(() => {
@@ -50,32 +50,32 @@ export const Game = React.memo(() => {
     return (
         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
             <div />
-                <div className="flex justify-center items-center">
-                    <div className="w-fit flex flex-col">
-                        <div className="select-none text text-2xl w-full h-[40px] flex items-center">
-                            <InGameTimer callback={handleTimeupNotice} />
-                        </div>
-                        <div className="select-none text text-2xl w-full flex items-center">
-                            <div className={`${font.className} text-white`}>
-                                {sentence && sentence.text}
-                            </div>
-                        </div>
-                        <div className="select-none text text-2xl w-full flex items-center">
-                            <div className={`${font.className} text-white`}>
-                                {sentence && sentence.ruby}
-                            </div>
-                        </div>
-                        <div className="select-none text text-2xl w-full h-[70px] flex items-center">
-                            {sentence?.ruby && (
-                                <Suggestion
-                                    sentence={sentence.ruby}
-                                    callback={handleCompleteNotice}
-                                />
-                            )}
+            <div className="flex justify-center items-center">
+                <div className="w-fit flex flex-col">
+                    <div className="select-none text text-2xl w-full h-[40px] flex items-center">
+                        <InGameTimer callback={handleTimeupNotice} />
+                    </div>
+                    <div className="select-none text text-2xl w-full flex items-center">
+                        <div className={`${font.className} text-white`}>
+                            {sentence && sentence.text}
                         </div>
                     </div>
+                    <div className="select-none text text-2xl w-full flex items-center">
+                        <div className={`${font.className} text-white`}>
+                            {sentence && sentence.ruby}
+                        </div>
+                    </div>
+                    <div className="select-none text text-2xl w-full h-[70px] flex items-center">
+                        {sentence?.ruby && (
+                            <Suggestion
+                                sentence={sentence.ruby}
+                                callback={handleCompleteNotice}
+                            />
+                        )}
+                    </div>
                 </div>
-                <div />
             </div>
+            <div />
+        </div>
     );
 });

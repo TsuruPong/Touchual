@@ -19,9 +19,7 @@ export const resolvers = {
                     WHERE
                     level = ${args.level}
                     AND
-                    difficulty between ${args.difficulty} - 0.1 AND ${args.difficulty} + 0.1
-                    ORDER BY
-                    ABS(difficulty - ${args.difficulty}) ASC
+                    difficulty = ${args.difficulty}
                     LIMIT 1
                 `;
             const { text, ruby, level, difficulty } = result[0];
