@@ -1,5 +1,5 @@
 import { Hiragana } from "./hiragana";
-import { KanaSymbol } from "@/components/travis/type/hiragana/kanaSymbol";
+import { KanaSymbol } from "@/type/hiragana/kanaSymbol";
 
 export const gojuons: Map<string, KanaSymbol> = new Map<string, KanaSymbol>([
     // あ行

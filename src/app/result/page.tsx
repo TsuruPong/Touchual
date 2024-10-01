@@ -1,5 +1,5 @@
-import { Result } from "@/components/presentationals/layouts/sections/result/result";
+import { Result } from "@/components/templates/result";
 
 export default function Home() {
-  return <Result />;
+    return <Result />;
 }

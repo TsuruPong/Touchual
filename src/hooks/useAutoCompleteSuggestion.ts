@@ -1,6 +1,6 @@
 "use client"
 
-import { Hiragana } from "@/components/containers/const/hiragana/hiragana";
+import { Hiragana } from "@/const/hiragana/hiragana";
 import { ILetter } from "@/domains/sentences/letter";
 
 export const useAutoCompleateSuggestion = () => {

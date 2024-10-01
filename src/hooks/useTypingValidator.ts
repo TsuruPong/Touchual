@@ -1,9 +1,9 @@
-import { Hiragana } from '@/components/containers/const/hiragana/hiragana';
+import { Hiragana } from '@/const/hiragana/hiragana';
 import { ILetter } from '@/domains/sentences/letter'
 import { ILetterMoraTreeNode } from '@/domains/sentences/letterTreeNode';
 
-export const useKeyboarInputValidatior = () => {
-    const isCollect = (letter: ILetter, collects: string[], inputKey: string): boolean => {
+export const useTypingValidator= () => {
+    const validateTyping = (letter: ILetter, collects: string[], inputKey: string): boolean => {
         if (collects.length == 0) {
             return letter.getMoraTreeNodes().map((m) => m.getValue()).includes(inputKey);
         }
@@ -43,5 +43,5 @@ export const useKeyboarInputValidatior = () => {
 
         return false;
     }
-    return { isCollect };
+    return { validateTyping };
 }

@@ -1,5 +1,5 @@
-import { Top } from "@/components/presentationals/layouts/top/top";
+import { Top } from "@/components/templates/top";
 
 export default function Home() {
-  return <Top />;
+    return <Top />;
 }

@@ -1,8 +1,8 @@
-import { IDetail } from "@/components/containers/feature/interfaces/detail";
-import { IDomain } from "@/components/containers/feature/interfaces/domain";
-import { AbstractFactory } from "@/components/containers/feature/interfaces/factory";
-import { IValidator } from "@/components/containers/feature/interfaces/validator";
-import { IEntityBuilder } from "@/components/containers/feature/interfaces/entityBuilder";
+import { IDetail } from "@/feature/interfaces/detail";
+import { IDomain } from "@/feature/interfaces/domain";
+import { AbstractFactory } from "@/feature/interfaces/factory";
+import { IValidator } from "@/feature/interfaces/validator";
+import { IEntityBuilder } from "@/feature/interfaces/entityBuilder";
 import { ILetterMoraTreeNode, LetterMoraTreeNodeFactory, LetterMoraTreeNodeGenerateDetail } from "./letterTreeNode";
 import { IWord, Word } from "./word";
 

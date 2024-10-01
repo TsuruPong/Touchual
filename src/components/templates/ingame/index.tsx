@@ -3,7 +3,7 @@
 import * as React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Suggestion } from "./suggestion";
+import { Suggestion } from "../../organisms/suggestion";
 import { InGameTimer } from "./timer";
 import { Noto_Sans_Javanese } from "next/font/google";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";

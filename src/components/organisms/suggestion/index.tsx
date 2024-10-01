@@ -6,13 +6,10 @@ import { ILetter } from "@/domains/sentences/letter";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useLetter } from "@/hooks/useLetter";
 import { useCollectStore } from "@/hooks/useCollectStore";
-import {
-    Letter,
-    LetterKind,
-} from "@/components/presentationals/elements/letter/letter";
+import { Letter, LetterKind } from "@/components/elements/letter";
 import { Incollect, useIncollectStore } from "@/hooks/useIncollectStore";
 import { useAutoCompleateSuggestion } from "@/hooks/useAutoCompleteSuggestion";
-import { useKeyboarInputValidatior } from "@/hooks/useKeyboardInputValidator";
+import { useTypingValidator } from "@/hooks/useTypingValidator";
 
 type SuggestionProp = {
     sentence?: string;
@@ -30,8 +27,7 @@ export const Suggestion: React.FC<SuggestionProp> = ({
     const { incollect, store, reset } = useIncollectStore();
     const { generateLetter } = useLetter();
     const { generateSuggestionText } = useAutoCompleateSuggestion();
-    const { isCollect } = useKeyboarInputValidatior();
-
+    const { validateTyping } = useTypingValidator();
 
     React.useEffect(() => {
         if (!letter) return;
@@ -39,7 +35,7 @@ export const Suggestion: React.FC<SuggestionProp> = ({
         if (!next) return;
 
         for (const key of inputs) {
-            if (isCollect(next, collects, key)) {
+            if (validateTyping(next, collects, key)) {
                 add(key);
                 clear();
                 reset();
@@ -47,7 +43,7 @@ export const Suggestion: React.FC<SuggestionProp> = ({
                 const splitedSuggestion = suggestion.split("");
                 if (
                     incollect.key !== splitedSuggestion[collects.length] ||
-                        incollect.index !== collects.length
+                    incollect.index !== collects.length
                 ) {
                     store({
                         key: splitedSuggestion[collects.length],

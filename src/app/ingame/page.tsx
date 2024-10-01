@@ -1,5 +1,5 @@
-import { Game } from "@/components/presentationals/layouts/sections/ingame/game";
+import { Game } from "@/components/templates/ingame";
 
 export default function Home() {
-  return <Game />;
+    return <Game />;
 }

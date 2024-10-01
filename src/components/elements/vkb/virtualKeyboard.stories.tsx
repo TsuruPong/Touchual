@@ -1,9 +1,9 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { VirtualKeyBoard } from "./virtualKeyboard";
+import { VirtualKeyBoard } from ".";
 
 const meta: Meta<typeof VirtualKeyBoard> = {
-  title: "virtual keyboard",
-  component: VirtualKeyBoard,
+    title: "virtual keyboard",
+    component: VirtualKeyBoard,
 };
 
 export default meta;

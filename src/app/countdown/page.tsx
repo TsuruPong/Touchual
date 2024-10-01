@@ -1,5 +1,5 @@
-import { CountDown } from "@/components/presentationals/layouts/sections/countdown/countdown";
+import { CountDown } from "@/components/templates/countdown";
 
 export default function Home() {
-  return <CountDown />;
+    return <CountDown />;
 }
