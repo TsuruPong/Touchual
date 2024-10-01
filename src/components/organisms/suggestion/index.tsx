@@ -8,7 +8,7 @@ import { useLetter } from "@/hooks/useLetter";
 import { useCollectStore } from "@/hooks/useCollectStore";
 import { Letter, LetterKind } from "@/components/elements/letter";
 import { Incollect, useIncollectStore } from "@/hooks/useIncollectStore";
-import { useAutoCompleateSuggestion } from "@/hooks/useAutoCompleteSuggestion";
+import { useAutoCompleate } from "@/hooks/useAutoCompleteSuggestion";
 import { useTypingValidator } from "@/hooks/useTypingValidator";
 
 type SuggestionProp = {
@@ -22,11 +22,11 @@ export const Suggestion: React.FC<SuggestionProp> = ({
 }) => {
     const [letter, setLetter] = React.useState<ILetter>();
     const { collects, add, clean } = useCollectStore();
-    const [suggestion, setSuggestion] = React.useState<string>("");
+    const [s, setSuggestion] = React.useState<string>("");
     const { inputs, clear } = useKeyboardInput();
     const { incollect, store, reset } = useIncollectStore();
     const { generateLetter } = useLetter();
-    const { generateSuggestionText } = useAutoCompleateSuggestion();
+    const { suggestion } = useAutoCompleate();
     const { validateTyping } = useTypingValidator();
 
     React.useEffect(() => {
@@ -40,7 +40,7 @@ export const Suggestion: React.FC<SuggestionProp> = ({
                 clear();
                 reset();
             } else {
-                const splitedSuggestion = suggestion.split("");
+                const splitedSuggestion = s.split("");
                 if (
                     incollect.key !== splitedSuggestion[collects.length] ||
                     incollect.index !== collects.length
@@ -69,8 +69,8 @@ export const Suggestion: React.FC<SuggestionProp> = ({
 
     React.useEffect(() => {
         if (!letter) return;
-        setSuggestion(() => generateSuggestionText(letter, collects));
-        const sl = suggestion.split("").length;
+        setSuggestion(() => suggestion(letter, collects));
+        const sl = s.split("").length;
         const cl = collects.length;
         if (sl == cl) {
             callback();
@@ -92,12 +92,12 @@ export const Suggestion: React.FC<SuggestionProp> = ({
         return LetterKind.EMPTY;
     };
 
-    return suggestion
+    return s
         .split("")
-        .map((s, i) => (
+        .map((ss, i) => (
             <Letter
                 key={i}
-                letter={s}
+                letter={ss}
                 kind={decideLetterKind(collects, incollect, i)}
             />
         ));

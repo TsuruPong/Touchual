@@ -3,8 +3,8 @@
 import { Hiragana } from "@/const/hiragana/hiragana";
 import { ILetter } from "@/domains/sentences/letter";
 
-export const useAutoCompleateSuggestion = () => {
-    const generateSuggestionText = (letter: ILetter, collects: string[]) => {
+export const useAutoCompleate = () => {
+    const suggestion = (letter: ILetter, collects: string[]) => {
         let predicts: string[] = [];
         let l: ILetter = letter;
         let n: number = 0;
@@ -49,5 +49,5 @@ export const useAutoCompleateSuggestion = () => {
         return predicts.join("");
     }
 
-    return { generateSuggestionText };
+    return { suggestion };
 }
