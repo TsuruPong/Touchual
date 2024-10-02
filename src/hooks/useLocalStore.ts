@@ -12,6 +12,6 @@ const useLocalStoreBase = create<StoreState<any>>((set) => ({
     store: (n) => set({data: n})
 }));
 
-export const useLocalStore = <Item, Slice> (
-    selector: (state: StoreState<Item>) => Slice,
+export const useLocalStore = <Item> (
+    selector: (state: StoreState<Item>) => StoreState<Item>,
 ) => useLocalStoreBase(selector);

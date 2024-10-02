@@ -3,47 +3,112 @@
 import * as React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Suggestion } from "../../organisms/suggestion";
+import { Suggestion } from "../../elements/suggestion";
 import { InGameTimer } from "./timer";
 import { Noto_Sans_Javanese } from "next/font/google";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
+import { ILetter } from "@/domains/sentences/letter";
+import { useKeyboardInput } from "@/hooks/useKeyboardInput";
+import { useLetter } from "@/hooks/useLetter";
+import { useAutoCompleate } from "@/hooks/useAutoComplete";
+import { useTypingValidator } from "@/hooks/useTypingValidator";
+import { useIncollectStore } from "@/hooks/useIncollectStore";
+import { LetterKind } from "@/components/elements/letter";
+
 const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
-type Sentence = {
-    text: string;
-    ruby: string;
-};
-
 export const Game = React.memo(() => {
-    const [sentence, setSentence] = React.useState<Sentence>();
+    const { inputs, clear } = useKeyboardInput();
+    const { generate } = useLetter();
+    const { suggestion } = useAutoCompleate();
+    const { validateTyping } = useTypingValidator();
+    const { data, error, loading, refetch } = useGetApproxSentenceQuery({
+        variables: { level: 1, difficulty: 1.0 },
+    });
+    const [sentence, setSentence] = React.useState<{
+        text: string;
+        ruby: string;
+    }>();
+    const [letter, setLetter] = React.useState<ILetter>();
+    //const { collects, add, clean } = useCollectStore();
+    const [collects, setCollects] = React.useState<string[]>([]);
+    const { incollect, store, reset } = useIncollectStore();
+    const [autoCompleate, setAutoCompleate] = React.useState<string>("");
+    const [kinds, setKinds] = React.useState<LetterKind[]>([]);
     const [level, setLevel] = React.useState<number>(1);
     const [difficulty, setDifficulty] = React.useState<number>(1.0);
-    const { data, error, loading, refetch } = useGetApproxSentenceQuery({
-        variables: { level: level, difficulty: difficulty },
-    });
 
-    const handleCompleteNotice = () => {
+    React.useEffect(() => {
         fetchSentence();
-    };
+    }, []);
+
+    React.useEffect(() => {
+        const sentence = data?.getApproxSentence || undefined;
+        if (!sentence?.text || !sentence?.ruby) return;
+        setSentence(() => ({
+            text: sentence.text,
+            ruby: sentence.ruby,
+        }));
+    }, [loading]);
+
+    React.useEffect(() => {
+        if (!sentence?.ruby) return;
+        setLetter(() => generate(sentence.ruby));
+    }, [sentence?.ruby]);
+
+    React.useEffect(() => {
+        if (!letter) return;
+        const newSuggestion = suggestion(letter, collects);
+        if (newSuggestion !== autoCompleate) {
+            setAutoCompleate(newSuggestion);
+        }
+    }, [letter, collects, incollect.index]);
+
+    React.useEffect(() => {
+        if (!letter) return;
+    }, [inputs]);
+
+    React.useEffect(() => {
+        if (!letter) return;
+        const next = letter.getNext();
+        if (!next) return;
+        if (inputs.length == 0) return;
+        let c = collects;
+        for (let i = 0; i < inputs.length; i++) {
+            if (validateTyping(next, c, inputs[i])) {
+                c = [...c, inputs[i]];
+                reset();
+            } else {
+                store({ key: inputs[i], index: c.length + i });
+                break;
+            }
+        }
+        clear();
+        if (collects !== c) {
+            setCollects(() => c);
+        }
+    }, [inputs]);
+
+    React.useEffect(() => {
+        let kinds: LetterKind[] = [];
+        const acs = autoCompleate.split("");
+        for (let i = 0; i < acs.length; i++) {
+            if (i == incollect.index) {
+                kinds.push(LetterKind.INCOLLECT);
+            } else if (collects[i]) {
+                kinds.push(LetterKind.COLLECT);
+            } else {
+                kinds.push(LetterKind.EMPTY);
+            }
+        }
+        setKinds(() => kinds);
+    }, [sentence, autoCompleate, collects, incollect.index]);
 
     const handleTimeupNotice = () => {
         navigateToResult();
     };
 
     const fetchSentence = refetch;
-
-    React.useEffect(() => {
-        const sentence = data?.getApproxSentence || undefined;
-        setSentence(() => sentence);
-    }, [loading]);
-
-    React.useEffect(() => {
-        //if (!error) console.error(error);
-    }, [error]);
-
-    React.useEffect(() => {
-        fetchSentence();
-    }, []);
 
     const navigateToResult = () => {};
 
@@ -57,19 +122,19 @@ export const Game = React.memo(() => {
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
                         <div className={`${font.className} text-white`}>
-                            {sentence && sentence.text}
+                            {sentence?.text && sentence.text}
                         </div>
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
                         <div className={`${font.className} text-white`}>
-                            {sentence && sentence.ruby}
+                            {sentence?.ruby && sentence.ruby}
                         </div>
                     </div>
                     <div className="select-none text text-2xl w-full h-[70px] flex items-center">
-                        {sentence?.ruby && (
+                        {autoCompleate && (
                             <Suggestion
-                                sentence={sentence.ruby}
-                                callback={handleCompleteNotice}
+                                suggestion={autoCompleate}
+                                kinds={kinds}
                             />
                         )}
                     </div>
