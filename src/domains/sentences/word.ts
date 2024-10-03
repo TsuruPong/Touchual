@@ -1,9 +1,9 @@
 import { Hiragana } from "@/const/hiragana/hiragana";
-import { IDetail } from "@/feature/interfaces/detail";
-import { IDomain } from "@/feature/interfaces/domain";
-import { AbstractFactory } from "@/feature/interfaces/factory";
-import { IValidator } from "@/feature/interfaces/validator";
-import { IEntityBuilder } from "@/feature/interfaces/entityBuilder";
+import { IDetail } from "@/feature/interfaces/domains/detail";
+import { IDomain } from "@/feature/interfaces/domains/domain";
+import { AbstractFactory } from "@/feature/interfaces/domains/factory";
+import { IValidator } from "@/feature/interfaces/domains/validator";
+import { IEntityBuilder } from "@/feature/interfaces/domains/entityBuilder";
 
 export interface IWord extends IDomain<IWord> {
     getWord(): string;
