@@ -9,11 +9,17 @@ import { Noto_Sans_Javanese } from "next/font/google";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { ILetter } from "@/domains/sentences/letter";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
-import { useLetter } from "@/hooks/useLetter";
-import { useAutoCompleate } from "@/hooks/useAutoComplete";
-import { useTypingValidator } from "@/hooks/useTypingValidator";
-import { useIncollectStore } from "@/hooks/useIncollectStore";
 import { LetterKind } from "@/components/elements/letter";
+import { useAutoCompleate } from "@/components/templates/ingame/hook/useAutoComplete";
+import { useIncollectStore } from "@/components/templates/ingame/hook/useIncollectStore";
+import { useTypingValidator } from "@/components/templates/ingame/hook/useTypingValidator";
+import { useLetter } from "@/components/templates/ingame/hook/useLetter";
+import {
+    useCollectTypingCounter,
+    useIncollectTypingCounter,
+    useTotalTypingCounter,
+} from "./hook/useTypingCounter";
+import { useIndicator } from "./hook/useIndicator";
 
 const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
@@ -30,16 +36,19 @@ export const Game = React.memo(() => {
         ruby: string;
     }>();
     const [letter, setLetter] = React.useState<ILetter>();
-    //const { collects, add, clean } = useCollectStore();
     const [collects, setCollects] = React.useState<string[]>([]);
     const { incollect, store, reset } = useIncollectStore();
     const [autoCompleate, setAutoCompleate] = React.useState<string>("");
     const [kinds, setKinds] = React.useState<LetterKind[]>([]);
     const [level, setLevel] = React.useState<number>(1);
     const [difficulty, setDifficulty] = React.useState<number>(1.0);
+    const { totalCount, incTotalCount } = useTotalTypingCounter();
+    const { collectCount, incCollectCount } = useCollectTypingCounter();
+    const { incollectCount, incIncollectCount } = useIncollectTypingCounter();
+    const { wpm, acc } = useIndicator();
 
     React.useEffect(() => {
-        fetchSentence();
+        refetch();
     }, []);
 
     React.useEffect(() => {
@@ -66,20 +75,19 @@ export const Game = React.memo(() => {
 
     React.useEffect(() => {
         if (!letter) return;
-    }, [inputs]);
-
-    React.useEffect(() => {
-        if (!letter) return;
         const next = letter.getNext();
         if (!next) return;
         if (inputs.length == 0) return;
         let c = collects;
         for (let i = 0; i < inputs.length; i++) {
+            incTotalCount();
             if (validateTyping(next, c, inputs[i])) {
                 c = [...c, inputs[i]];
                 reset();
+                incCollectCount();
             } else {
                 store({ key: inputs[i], index: c.length + i });
+                incIncollectCount();
                 break;
             }
         }
@@ -107,8 +115,6 @@ export const Game = React.memo(() => {
     const handleTimeupNotice = () => {
         navigateToResult();
     };
-
-    const fetchSentence = refetch;
 
     const navigateToResult = () => {};
 

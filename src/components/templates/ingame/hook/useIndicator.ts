@@ -3,7 +3,7 @@
 export const useIndicator = () => {
 
     const wpm = (count: number): number => {
-        return (count) / (5 * (60 / 60));
+        return (count / 5) / 1;
     }
 
     const acc = (collectCount: number, totalCount: number) => {
