@@ -1,4 +1,6 @@
 "use client";
+import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import * as React from "react";
 
 export const Result: React.FC = () => {
@@ -8,6 +10,16 @@ export const Result: React.FC = () => {
     const incollect = 999;
     const miss = 999;
     const time = 60;
+    const { inputs } = useKeyboardInput();
+    const machine = new ScreenStateMachine();
+    React.useEffect(() => {
+        if (inputs.some((k) => k == "Space")) {
+            machine.forward();
+        }
+        if (inputs.some((k) => k == "Escape")) {
+            machine.backward();
+        }
+    }, [inputs]);
 
     return (
         <div className="w-full h-full px-96 py-4">

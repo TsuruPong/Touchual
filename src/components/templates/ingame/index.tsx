@@ -20,6 +20,8 @@ import {
     useTotalTypingCounter,
 } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
+import { TimerKind, useTimer } from "@/hooks/useTimer";
+import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
 
 const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
@@ -46,10 +48,21 @@ export const Game = React.memo(() => {
     const { collectCount, incCollectCount } = useCollectTypingCounter();
     const { incollectCount, incIncollectCount } = useIncollectTypingCounter();
     const { wpm, acc } = useIndicator();
+    const { time } = useTimer(TimerKind.SUB, 60);
+    const machine = new ScreenStateMachine();
 
     React.useEffect(() => {
         refetch();
     }, []);
+
+    React.useEffect(() => {
+        if (time < 0) {
+            machine.forward();
+        }
+        if (inputs.some((k) => k == "Escape")) {
+            machine.backward();
+        }
+    }, [inputs, time]);
 
     React.useEffect(() => {
         const sentence = data?.getApproxSentence || undefined;
