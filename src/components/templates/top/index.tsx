@@ -1,13 +1,19 @@
 "use client";
-import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import {
+    ScreenStateKinds,
+    ScreenStateMachine,
+} from "@/feature/boundaries/transitions/screen/machine";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 export const Top: React.FC = () => {
     const { inputs } = useKeyboardInput();
-    const machine = new ScreenStateMachine();
+    const router = useRouter();
+    const machine = new ScreenStateMachine(ScreenStateKinds.INIT, router);
     React.useEffect(() => {
-        if (inputs.some((k) => k == "Space")) {
+        console.log(inputs);
+        if (inputs.some((k) => k == " ")) {
             machine.forward();
         }
         if (inputs.some((k) => k == "Escape")) {

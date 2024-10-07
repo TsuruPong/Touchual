@@ -1,6 +1,10 @@
 "use client";
-import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import {
+    ScreenStateKinds,
+    ScreenStateMachine,
+} from "@/feature/boundaries/transitions/screen/machine";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 export const Result: React.FC = () => {
@@ -11,7 +15,8 @@ export const Result: React.FC = () => {
     const miss = 999;
     const time = 60;
     const { inputs } = useKeyboardInput();
-    const machine = new ScreenStateMachine();
+    const router = useRouter();
+    const machine = new ScreenStateMachine(ScreenStateKinds.RESULT, router);
     React.useEffect(() => {
         if (inputs.some((k) => k == "Space")) {
             machine.forward();

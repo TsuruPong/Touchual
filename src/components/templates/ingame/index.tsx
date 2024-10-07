@@ -21,7 +21,11 @@ import {
 } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
-import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import {
+    ScreenStateKinds,
+    ScreenStateMachine,
+} from "@/feature/boundaries/transitions/screen/machine";
+import { useRouter } from "next/navigation";
 
 const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 
@@ -49,7 +53,8 @@ export const Game = React.memo(() => {
     const { incollectCount, incIncollectCount } = useIncollectTypingCounter();
     const { wpm, acc } = useIndicator();
     const { time } = useTimer(TimerKind.SUB, 60);
-    const machine = new ScreenStateMachine();
+    const router = useRouter();
+    const machine = new ScreenStateMachine(ScreenStateKinds.INGAME, router);
 
     React.useEffect(() => {
         refetch();

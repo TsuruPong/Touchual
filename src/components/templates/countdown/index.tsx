@@ -1,13 +1,21 @@
 "use client";
-import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import {
+    ScreenStateKinds,
+    ScreenStateMachine,
+} from "@/feature/boundaries/transitions/screen/machine";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 export const CountDown: React.FC = () => {
-    const { time } = useTimer(TimerKind.SUB, 3);
+    const { time, start } = useTimer(TimerKind.SUB, 3);
     const { inputs } = useKeyboardInput();
-    const machine = new ScreenStateMachine();
+    const router = useRouter();
+    const machine = new ScreenStateMachine(ScreenStateKinds.COUNTDOWN, router);
+    React.useEffect(() => {
+        start();
+    }, []);
     React.useEffect(() => {
         if (time < 0) {
             machine.forward();
@@ -15,7 +23,7 @@ export const CountDown: React.FC = () => {
         if (inputs.some((k) => k == "Escape")) {
             machine.backward();
         }
-    }, [inputs]);
+    }, [inputs, time]);
     return (
         <div className="flex justify-center items-center">
             <div className="mx-auto my-0">{time}</div>

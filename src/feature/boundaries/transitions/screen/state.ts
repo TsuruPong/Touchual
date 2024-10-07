@@ -1,12 +1,23 @@
 import { AbstractState } from "../abs/state";
 import { ScreenStateMachine } from "./machine";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { IState } from "@/feature/interfaces/transitions/state";
+import { AbstractStateMachine } from "../abs/machine";
 
-export class InitScreenState extends AbstractState<InitScreenState, ScreenStateMachine> {
-    constructor(statemachine: ScreenStateMachine) {
+abstract class AbstractScreenState<TState extends IState, TMachine extends AbstractStateMachine<TState>>extends AbstractState<TState, TMachine> {
+    protected router: AppRouterInstance;
+    constructor(statemachine: TMachine, router: AppRouterInstance) {
         super(statemachine);
+        this.router = router;
+    }
+}
+
+export class InitScreenState extends AbstractScreenState<InitScreenState, ScreenStateMachine> {
+    constructor(statemachine: ScreenStateMachine, rounter: AppRouterInstance) {
+        super(statemachine, rounter);
     }
     do(): void {
-        throw new Error("Method not implemented.");
+        this.router.push("/top");
     }
     forward(): void {
         this.statemachine.change(this.statemachine.countdown);
@@ -16,12 +27,12 @@ export class InitScreenState extends AbstractState<InitScreenState, ScreenStateM
     }
 }
 
-export class CountdownScreenState extends AbstractState<CountdownScreenState, ScreenStateMachine> {
-    constructor(statemachine: ScreenStateMachine) {
-        super(statemachine);
+export class CountdownScreenState extends AbstractScreenState<CountdownScreenState, ScreenStateMachine> {
+    constructor(statemachine: ScreenStateMachine, rounter: AppRouterInstance) {
+        super(statemachine, rounter);
     }
     do(): void {
-        throw new Error("Method not implemented.");
+        this.router.push("/countdown")
     }
     forward(): void {
         this.statemachine.change(this.statemachine.ingame);
@@ -31,12 +42,12 @@ export class CountdownScreenState extends AbstractState<CountdownScreenState, Sc
     }
 }
 
-export class IngameScreenState extends AbstractState<IngameScreenState, ScreenStateMachine> {
-    constructor(statemachine: ScreenStateMachine) {
-        super(statemachine);
+export class IngameScreenState extends AbstractScreenState<IngameScreenState, ScreenStateMachine> {
+    constructor(statemachine: ScreenStateMachine, rounter: AppRouterInstance) {
+        super(statemachine, rounter);
     }
     do(): void {
-        throw new Error("Method not implemented.");
+        this.router.push("/ingame")
     }
     forward(): void {
         this.statemachine.change(this.statemachine.result);
@@ -46,12 +57,12 @@ export class IngameScreenState extends AbstractState<IngameScreenState, ScreenSt
     }
 }
 
-export class ResultScreenState extends AbstractState<ResultScreenState, ScreenStateMachine> {
-    constructor(statemachine: ScreenStateMachine) {
-        super(statemachine);
+export class ResultScreenState extends AbstractScreenState<ResultScreenState, ScreenStateMachine> {
+    constructor(statemachine: ScreenStateMachine, rounter: AppRouterInstance) {
+        super(statemachine, rounter);
     }
     do(): void {
-        throw new Error("Method not implemented.");
+        this.router.push("/result")
     }
     forward(): void {
         this.statemachine.change(this.statemachine.init);
