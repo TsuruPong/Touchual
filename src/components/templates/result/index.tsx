@@ -1,4 +1,6 @@
 "use client";
+import { Noto_Sans_Javanese } from "next/font/google";
+const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 import {
     ScreenStateKinds,
     ScreenStateMachine,
@@ -58,7 +60,9 @@ export const Result: React.FC = () => {
                         </div>
                     </div>
                     <div className="w-full h-1/5 flex justify-center items-end">
-                        スペースでリスタート
+                        <div className={`${font.className} text-white`}>
+                            スペースキーでリスタート
+                        </div>
                     </div>
                 </div>
             </div>

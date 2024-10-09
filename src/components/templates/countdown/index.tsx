@@ -1,4 +1,6 @@
 "use client";
+import { Noto_Sans_Javanese } from "next/font/google";
+const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
 import {
     ScreenStateKinds,
     ScreenStateMachine,
@@ -17,7 +19,7 @@ export const CountDown: React.FC = () => {
         start();
     }, []);
     React.useEffect(() => {
-        if (time < 0) {
+        if (time <= 0) {
             machine.forward();
         }
         if (inputs.some((k) => k.code == "Escape")) {
@@ -26,7 +28,9 @@ export const CountDown: React.FC = () => {
     }, [inputs, time]);
     return (
         <div className="flex justify-center items-center">
-            <div className="mx-auto my-0">{time}</div>
+            <div className="mx-auto my-0">
+                <div className={`${font.className} text-white`}>{time}</div>
+            </div>
         </div>
     );
 };
