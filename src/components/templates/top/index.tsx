@@ -13,10 +13,10 @@ export const Top: React.FC = () => {
     const machine = new ScreenStateMachine(ScreenStateKinds.INIT, router);
     React.useEffect(() => {
         console.log(inputs);
-        if (inputs.some((k) => k == " ")) {
+        if (inputs.some((k) => k.code == "Space")) {
             machine.forward();
         }
-        if (inputs.some((k) => k == "Escape")) {
+        if (inputs.some((k) => k.code == "Escape")) {
             machine.backward();
         }
     }, [inputs]);

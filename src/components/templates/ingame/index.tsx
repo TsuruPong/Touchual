@@ -52,7 +52,6 @@ export const Game = React.memo(() => {
     const { collectCount, incCollectCount } = useCollectTypingCounter();
     const { incollectCount, incIncollectCount } = useIncollectTypingCounter();
     const { wpm, acc } = useIndicator();
-    const { time } = useTimer(TimerKind.SUB, 60);
     const router = useRouter();
     const machine = new ScreenStateMachine(ScreenStateKinds.INGAME, router);
 
@@ -61,13 +60,10 @@ export const Game = React.memo(() => {
     }, []);
 
     React.useEffect(() => {
-        if (time < 0) {
-            machine.forward();
-        }
-        if (inputs.some((k) => k == "Escape")) {
+        if (inputs.some((k) => k.code == "Escape")) {
             machine.backward();
         }
-    }, [inputs, time]);
+    }, [inputs]);
 
     React.useEffect(() => {
         const sentence = data?.getApproxSentence || undefined;
@@ -98,13 +94,14 @@ export const Game = React.memo(() => {
         if (inputs.length == 0) return;
         let c = collects;
         for (let i = 0; i < inputs.length; i++) {
+            if (inputs[i].code == "Escape") continue;
             incTotalCount();
-            if (validateTyping(next, c, inputs[i])) {
-                c = [...c, inputs[i]];
+            if (validateTyping(next, c, inputs[i].key)) {
+                c = [...c, inputs[i].key];
                 reset();
                 incCollectCount();
             } else {
-                store({ key: inputs[i], index: c.length + i });
+                store({ key: inputs[i].key, index: c.length + i });
                 incIncollectCount();
                 break;
             }
@@ -131,10 +128,8 @@ export const Game = React.memo(() => {
     }, [sentence, autoCompleate, collects, incollect.index]);
 
     const handleTimeupNotice = () => {
-        navigateToResult();
+        machine.forward();
     };
-
-    const navigateToResult = () => {};
 
     return (
         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">

@@ -18,10 +18,10 @@ export const Result: React.FC = () => {
     const router = useRouter();
     const machine = new ScreenStateMachine(ScreenStateKinds.RESULT, router);
     React.useEffect(() => {
-        if (inputs.some((k) => k == "Space")) {
+        if (inputs.some((k) => k.code == "Space")) {
             machine.forward();
         }
-        if (inputs.some((k) => k == "Escape")) {
+        if (inputs.some((k) => k.code == "Escape")) {
             machine.backward();
         }
     }, [inputs]);

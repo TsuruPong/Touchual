@@ -20,7 +20,7 @@ export const CountDown: React.FC = () => {
         if (time < 0) {
             machine.forward();
         }
-        if (inputs.some((k) => k == "Escape")) {
+        if (inputs.some((k) => k.code == "Escape")) {
             machine.backward();
         }
     }, [inputs, time]);

@@ -3,33 +3,47 @@
 import * as React from 'react';
 
 type KeyboardInput = {
-    inputs: string[],
+    inputs: KeyBoard[],
     clear: () => void
 }
 
+type KeyBoard = {
+    code: string,
+    key: string
+}
+
 export const useKeyboardInput = (): KeyboardInput => {
-    const [keysPressed, setKeysPressed] = React.useState<Set<string>>(new Set());
+    const [keysPressed, setKeysPressed] = React.useState<Set<KeyBoard>>(new Set());
     const ignoreKeys: string[] = [
         "Tab",
-        "Caps",
+        "CapsLock",
         "MetaLeft",
         "MetaRight",
         "Alt",
+        "AltLeft",
+        "AltRight",
         "Shift",
-        "Control",
+        "ShiftLeft",
+        "ShiftRight",
+        "ControlLeft",
+        "ControlRight",
         "Meta"
     ];
 
     const handleKeyDown = (event: KeyboardEvent) => {
         if (ignoreKeys.includes(event.key)) return;
-        setKeysPressed((prevKeysPressed) => new Set([...prevKeysPressed, event.key]));
+        setKeysPressed((prevKeysPressed) => new Set([...prevKeysPressed, ({code: event.code, key: event.key} as KeyBoard)]));
     };
   
     const handleKeyUp = (event: KeyboardEvent) => {
-        if (ignoreKeys.includes(event.key)) return;
+        if (ignoreKeys.includes(event.code)) return;
         setKeysPressed((prevKeysPressed) => {
             const newKeysPressed = new Set(prevKeysPressed);
-            newKeysPressed.delete(event.key);
+            for (const k of newKeysPressed) {
+                if (k.code == event.code) {
+                    newKeysPressed.delete(k);
+                }
+            }
             return newKeysPressed;
         });
     };
@@ -45,7 +59,7 @@ export const useKeyboardInput = (): KeyboardInput => {
     }, []);
 
     const clear = () => {
-        setKeysPressed(() => new Set<string>());
+        setKeysPressed(() => new Set<KeyBoard>());
     }
     
     return {inputs: Array.from(keysPressed), clear: clear};

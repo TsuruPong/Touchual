@@ -20,8 +20,8 @@ export const VirtualKeyBoard: React.FC = () => {
                                     symbol={key.symbol}
                                     kind={key.kind}
                                     code={key.code}
-                                    isPress={inputs.includes(
-                                        key.symbol.toLocaleLowerCase()
+                                    isPress={inputs.some(
+                                        (i) => i.code == key.code
                                     )}
                                 />
                             );
