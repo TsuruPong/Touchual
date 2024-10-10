@@ -1,15 +1,13 @@
 "use client";
-import { Noto_Sans_Javanese } from "next/font/google";
-const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
-import {
-    ScreenStateKinds,
-    ScreenStateMachine,
-} from "@/feature/boundaries/transitions/screen/machine";
-import { useKeyboardInput } from "@/hooks/useKeyboardInput";
-import { useRouter } from "next/navigation";
-import * as React from "react";
 
-export const Result: React.FC = () => {
+import * as React from "react";
+import { useKeyboardInput } from "@/hooks/useKeyboardInput";
+import { KanaText } from "@/components/elements/text";
+
+export const Result: React.FC<{
+    forward: () => void;
+    backward: () => void;
+}> = ({ forward, backward }) => {
     const wpm = 60.9;
     const acc = 100;
     const collect = 999;
@@ -17,14 +15,12 @@ export const Result: React.FC = () => {
     const miss = 999;
     const time = 60;
     const { inputs } = useKeyboardInput();
-    const router = useRouter();
-    const machine = new ScreenStateMachine(ScreenStateKinds.RESULT, router);
     React.useEffect(() => {
         if (inputs.some((k) => k.code == "Space")) {
-            machine.forward();
+            forward();
         }
         if (inputs.some((k) => k.code == "Escape")) {
-            machine.backward();
+            backward();
         }
     }, [inputs]);
 
@@ -60,9 +56,7 @@ export const Result: React.FC = () => {
                         </div>
                     </div>
                     <div className="w-full h-1/5 flex justify-center items-end">
-                        <div className={`${font.className} text-white`}>
-                            スペースキーでリスタート
-                        </div>
+                        <KanaText>スペースキーでリスタート</KanaText>
                     </div>
                 </div>
             </div>

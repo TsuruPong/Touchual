@@ -7,8 +7,8 @@ import { VirtualKeyBoard } from "@/components/elements/vkb";
 import { Footer } from "@/components/organisms/footer";
 
 export const metadata: Metadata = {
-    title: "",
-    description: "",
+    title: "Touchual",
+    description: "typing game",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
                         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
                             <Header />
                             <div className="h-full grid grid-rows-[1fr,0.4fr]">
-                                {children}
+                                <div className="">{children}</div>
                                 <div className="flex justify-center">
                                     <VirtualKeyBoard />
                                 </div>

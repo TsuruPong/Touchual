@@ -21,15 +21,13 @@ import {
 } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
-import {
-    ScreenStateKinds,
-    ScreenStateMachine,
-} from "@/feature/boundaries/transitions/screen/machine";
-import { useRouter } from "next/navigation";
+import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
+import { EngText, KanaText } from "@/components/elements/text";
 
-const font = Noto_Sans_Javanese({ subsets: ["latin"], weight: "500" });
-
-export const Game = React.memo(() => {
+export const Game: React.FC<{
+    forward: () => void;
+    backward: () => void;
+}> = ({ forward, backward }) => {
     const { inputs, clear } = useKeyboardInput();
     const { generate } = useLetter();
     const { suggestion } = useAutoCompleate();
@@ -52,8 +50,6 @@ export const Game = React.memo(() => {
     const { collectCount, incCollectCount } = useCollectTypingCounter();
     const { incollectCount, incIncollectCount } = useIncollectTypingCounter();
     const { wpm, acc } = useIndicator();
-    const router = useRouter();
-    const machine = new ScreenStateMachine(ScreenStateKinds.INGAME, router);
 
     React.useEffect(() => {
         refetch();
@@ -61,7 +57,7 @@ export const Game = React.memo(() => {
 
     React.useEffect(() => {
         if (inputs.some((k) => k.code == "Escape")) {
-            machine.backward();
+            backward();
         }
     }, [inputs]);
 
@@ -128,7 +124,7 @@ export const Game = React.memo(() => {
     }, [sentence, autoCompleate, collects, incollect.index]);
 
     const handleTimeupNotice = () => {
-        machine.forward();
+        forward();
     };
 
     return (
@@ -140,14 +136,10 @@ export const Game = React.memo(() => {
                         <InGameTimer callback={handleTimeupNotice} />
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
-                        <div className={`${font.className} text-white`}>
-                            {sentence?.text && sentence.text}
-                        </div>
+                        <EngText>{sentence?.text && sentence.text}</EngText>
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
-                        <div className={`${font.className} text-white`}>
-                            {sentence?.ruby && sentence.ruby}
-                        </div>
+                        <KanaText>{sentence?.ruby && sentence.ruby}</KanaText>
                     </div>
                     <div className="select-none text text-2xl w-full h-[70px] flex items-center">
                         {autoCompleate && (
@@ -162,4 +154,4 @@ export const Game = React.memo(() => {
             <div />
         </div>
     );
-});
+};
