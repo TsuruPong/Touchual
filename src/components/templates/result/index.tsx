@@ -1,28 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { KanaText } from "@/components/elements/text";
+import { useScreenStateMachine } from "@/hooks/useScreenStateMachine";
 
-export const Result: React.FC<{
-    forward: () => void;
-    backward: () => void;
-}> = ({ forward, backward }) => {
+export const Result: React.FC<{}> = ({}) => {
     const wpm = 60.9;
     const acc = 100;
     const collect = 999;
     const incollect = 999;
     const miss = 999;
     const time = 60;
-    const { inputs } = useKeyboardInput();
-    React.useEffect(() => {
-        if (inputs.some((k) => k.code == "Space")) {
-            forward();
-        }
-        if (inputs.some((k) => k.code == "Escape")) {
-            backward();
-        }
-    }, [inputs]);
+    const { forward, backward } = useScreenStateMachine();
 
     return (
         <div className="w-full h-full px-96 py-4">

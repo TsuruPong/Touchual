@@ -5,8 +5,6 @@ import * as React from "react";
 import { css } from "@emotion/react";
 import { Suggestion } from "../../elements/suggestion";
 import { InGameTimer } from "./timer";
-import { Noto_Sans_Javanese } from "next/font/google";
-import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { ILetter } from "@/domains/sentences/letter";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { LetterKind } from "@/components/elements/letter";
@@ -21,24 +19,17 @@ import {
 } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
-import { ScreenStateMachine } from "@/feature/boundaries/transitions/screen/machine";
 import { EngText, KanaText } from "@/components/elements/text";
 
-export const Game: React.FC<{
-    forward: () => void;
-    backward: () => void;
-}> = ({ forward, backward }) => {
+export const InGame: React.FC<{
+    sentence: { text: string; ruby: string };
+    handleTimeup: () => void;
+    handleRefetch: (level: number, difficulty: number) => void;
+}> = ({ sentence, handleTimeup, handleRefetch }) => {
     const { inputs, clear } = useKeyboardInput();
     const { generate } = useLetter();
     const { suggestion } = useAutoCompleate();
     const { validateTyping } = useTypingValidator();
-    const { data, error, loading, refetch } = useGetApproxSentenceQuery({
-        variables: { level: 1, difficulty: 1.0 },
-    });
-    const [sentence, setSentence] = React.useState<{
-        text: string;
-        ruby: string;
-    }>();
     const [letter, setLetter] = React.useState<ILetter>();
     const [collects, setCollects] = React.useState<string[]>([]);
     const { incollect, store, reset } = useIncollectStore();
@@ -52,28 +43,8 @@ export const Game: React.FC<{
     const { wpm, acc } = useIndicator();
 
     React.useEffect(() => {
-        refetch();
-    }, []);
-
-    React.useEffect(() => {
-        if (inputs.some((k) => k.code == "Escape")) {
-            backward();
-        }
-    }, [inputs]);
-
-    React.useEffect(() => {
-        const sentence = data?.getApproxSentence || undefined;
-        if (!sentence?.text || !sentence?.ruby) return;
-        setSentence(() => ({
-            text: sentence.text,
-            ruby: sentence.ruby,
-        }));
-    }, [loading]);
-
-    React.useEffect(() => {
-        if (!sentence?.ruby) return;
         setLetter(() => generate(sentence.ruby));
-    }, [sentence?.ruby]);
+    }, [sentence.ruby]);
 
     React.useEffect(() => {
         if (!letter) return;
@@ -123,17 +94,13 @@ export const Game: React.FC<{
         setKinds(() => kinds);
     }, [sentence, autoCompleate, collects, incollect.index]);
 
-    const handleTimeupNotice = () => {
-        forward();
-    };
-
     return (
         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
             <div />
             <div className="flex justify-center items-center">
                 <div className="w-fit flex flex-col">
                     <div className="select-none text text-2xl w-full h-[40px] flex items-center">
-                        <InGameTimer callback={handleTimeupNotice} />
+                        <InGameTimer callback={handleTimeup} />
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
                         <EngText>{sentence?.text && sentence.text}</EngText>

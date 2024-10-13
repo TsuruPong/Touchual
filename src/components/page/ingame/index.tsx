@@ -3,8 +3,12 @@
 import * as React from "react";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { InGame } from "@/components/templates/ingame";
+import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 
-export const InGameContainer: React.FC = () => {
+export const InGameContainer: React.FC<{
+    forward: () => void;
+    backward: () => void;
+}> = ({ forward, backward }) => {
     const [sentence, setSentence] = React.useState<{
         text: string;
         ruby: string;
@@ -13,6 +17,9 @@ export const InGameContainer: React.FC = () => {
         variables: { level: 1, difficulty: 1.0 },
     });
     React.useEffect(() => {
+        refetch();
+    }, []);
+    React.useEffect(() => {
         const sentence = data?.getApproxSentence || undefined;
         if (!sentence?.text || !sentence?.ruby) return;
         setSentence(() => ({
@@ -20,20 +27,26 @@ export const InGameContainer: React.FC = () => {
             ruby: sentence.ruby,
         }));
     }, [loading, data]);
+    const { inputs, clear } = useKeyboardInput();
 
-    if (!sentence) {
-        return <>loading...</>;
-    }
+    React.useEffect(() => {
+        if (inputs.some((k) => k.code == "Escape")) {
+            backward();
+        }
+    }, [inputs]);
 
     return (
-        <InGame
-            sentence={sentence}
-            handleRefetch={(level: number, difficulty: number) =>
-                refetch({
-                    level: level,
-                    difficulty: difficulty,
-                })
-            }
-        />
+        sentence && (
+            <InGame
+                sentence={sentence}
+                handleTimeup={forward}
+                handleRefetch={(level: number, difficulty: number) =>
+                    refetch({
+                        level: level,
+                        difficulty: difficulty,
+                    })
+                }
+            />
+        )
     );
 };

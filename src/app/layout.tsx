@@ -24,7 +24,7 @@ export default function RootLayout({
                         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
                             <Header />
                             <div className="h-full grid grid-rows-[1fr,0.4fr]">
-                                <div className="">{children}</div>
+                                <div className="w-full h-full">{children}</div>
                                 <div className="flex justify-center">
                                     <VirtualKeyBoard />
                                 </div>
