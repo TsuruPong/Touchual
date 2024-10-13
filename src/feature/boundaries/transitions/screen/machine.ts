@@ -6,6 +6,7 @@ export class ScreenStateMachine extends AbstractStateMachine<InitScreenState | C
     readonly countdown: CountdownScreenState;
     readonly ingame: IngameScreenState;
     readonly result: ResultScreenState;
+    private static instance: ScreenStateMachine;
     constructor() {
         super(null as any);
         this.init = new InitScreenState(this); 
@@ -13,5 +14,11 @@ export class ScreenStateMachine extends AbstractStateMachine<InitScreenState | C
         this.ingame = new IngameScreenState(this);
         this.result = new ResultScreenState(this);
         this.current = this.init;
+    }
+    public static getInstance(): ScreenStateMachine {
+        if (!this.instance) {
+            this.instance = new ScreenStateMachine();
+        }
+        return this.instance;
     }
 }
