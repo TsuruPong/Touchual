@@ -17,9 +17,6 @@ export const InGameContainer: React.FC<{
         variables: { level: 1, difficulty: 1.0 },
     });
     React.useEffect(() => {
-        refetch();
-    }, []);
-    React.useEffect(() => {
         const sentence = data?.getApproxSentence || undefined;
         if (!sentence?.text || !sentence?.ruby) return;
         setSentence(() => ({

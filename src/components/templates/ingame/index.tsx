@@ -18,7 +18,6 @@ import {
     useTotalTypingCounter,
 } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
-import { TimerKind, useTimer } from "@/hooks/useTimer";
 import { EngText, KanaText } from "@/components/elements/text";
 
 export const InGame: React.FC<{
@@ -50,7 +49,7 @@ export const InGame: React.FC<{
         if (!letter) return;
         const newSuggestion = suggestion(letter, collects);
         if (newSuggestion !== autoCompleate) {
-            setAutoCompleate(newSuggestion);
+            setAutoCompleate(() => newSuggestion);
         }
     }, [letter, collects, incollect.index]);
 
