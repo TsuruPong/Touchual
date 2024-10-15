@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { KanaText } from "@/components/elements/text";
-import { useScreenStateMachine } from "@/hooks/useScreenStateMachine";
 
 export const Result: React.FC<{}> = ({}) => {
     const wpm = 60.9;
@@ -11,7 +10,6 @@ export const Result: React.FC<{}> = ({}) => {
     const incollect = 999;
     const miss = 999;
     const time = 60;
-    const { forward, backward } = useScreenStateMachine();
 
     return (
         <div className="w-full h-full px-96 py-4">

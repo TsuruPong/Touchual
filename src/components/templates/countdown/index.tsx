@@ -17,7 +17,7 @@ export const CountDown: React.FC<{ handleTimeUp: () => void }> = ({
         }
     }, [time]);
     return (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center h-full">
             <div className="mx-auto my-0">
                 <EngText>{time}</EngText>
             </div>
