@@ -1,0 +1,1 @@
+export { ResultContainer as Result} from "./controller"

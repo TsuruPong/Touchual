@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { ApolloClientProvider } from "@/libs/apollo/client";
-import { Header } from "@/components/organisms/header";
-import { VirtualKeyBoard } from "@/components/elements/vkb";
-import { Footer } from "@/components/organisms/footer";
+import { Header } from "@/components/header";
+import { VirtualKeyBoard } from "@/components/vkb";
+import { Footer } from "@/components/fotter";
 
 export const metadata: Metadata = {
     title: "Touchual",
