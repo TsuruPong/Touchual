@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Mora } from "manimani";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useTypingValidator } from "./hook/useTypingValidator";
@@ -11,6 +10,9 @@ import { useIndicator } from "./hook/useIndicator";
 import { InGamePresentation } from "../presentation";
 import { useTokenizer } from "./hook/useTokenizer";
 import { MoraWithStatus } from "./type/extends/mora";
+import { useMoraTypeConverter } from "./hook/useMoraTypeConverter";
+import { useUpdateMora } from "./hook/useUpdateMora";
+import { AutoCompleate } from "../presentation/autocompleate/type";
 
 export const InGameContainer: React.FC = () => {
     const [sentence, setSentence] = React.useState<{
@@ -21,8 +23,12 @@ export const InGameContainer: React.FC = () => {
     const { inputs, clear } = useKeyboardInput();
     const { convertJaToRomajiTokens } = useTokenizer();
     const { isTypingCorrect } = useTypingValidator();
-    const [moras, setMoras] = React.useState<MoraWithStatus[]>([]);
-    const [autoCompleate, setAutoCompleate] = React.useState<string>("");
+    const [moras, setMoras] = React.useState<MoraWithStatus[]>();
+    const { toMoraWithStatus, toAutoCompleate } = useMoraTypeConverter();
+    const { updateCorrect, updateIncorrect } = useUpdateMora();
+    const [autoCompleate, setAutoCompleate] = React.useState<AutoCompleate[]>(
+        []
+    );
     //const [level, setLevel] = React.useState<number>(1);
     //const [difficulty, setDifficulty] = React.useState<number>(1.0);
     const { totalCounter, correctCounter, incorrectCounter } =
@@ -33,6 +39,14 @@ export const InGameContainer: React.FC = () => {
         variables: { level: 1, difficulty: 1.0 },
     });
 
+    const forward = React.useCallback(() => {
+        //router.push("/result");
+    }, []);
+
+    const backward = React.useCallback(() => {
+        router.push("/top");
+    }, []);
+
     React.useEffect(() => {
         const sentence = data?.getApproxSentence || undefined;
         if (!sentence?.text && !sentence?.ruby) return;
@@ -42,46 +56,57 @@ export const InGameContainer: React.FC = () => {
         }));
     }, [loading, data]);
 
-    React.useEffect(() => {
-        convertJaToRomajiTokens(sentence.text).then((moras) => {
-            setMoras(() => toMoraWithStatus(moras));
+    const convertTokens = React.useCallback(() => {
+        if (!sentence.ruby) return;
+        convertJaToRomajiTokens(sentence.ruby).then((moras) => {
+            setMoras(toMoraWithStatus(moras));
         });
-    }, [sentence]);
-
-    const toMoraWithStatus = (moras: Mora[]): MoraWithStatus[] => {
-        return moras.map((mora) => ({
-            ...mora,
-            status: "unanswered",
-        }));
-    };
+    }, [sentence.text]);
 
     React.useEffect(() => {
+        convertTokens();
+    }, [convertTokens]);
+
+    React.useEffect(() => {
+        if (!moras || moras.length == 0) return;
+        setAutoCompleate(() => toAutoCompleate(moras));
+        if (moras.every((m) => m.status == "correct")) {
+            refetch({
+                level: 2,
+                difficulty: 2.2,
+            });
+            return;
+        }
+    }, [moras]);
+
+    React.useEffect(() => {
+        if (inputs.length == 0) return;
+        if (inputs.some((key) => key.code == "Escape")) {
+            backward();
+            return;
+        }
+        if (!moras || moras.length == 0) return;
+        let m: MoraWithStatus[] = [...moras];
         for (const input of inputs) {
-            if (input.code == "Escape") continue;
             totalCounter.increment();
-            if (isTypingCorrect(moras, input.code)) {
+            if (isTypingCorrect(moras, input.key)) {
                 correctCounter.increment();
-                // statusを変更したmoraを生成する
+                m = updateCorrect(m, input.key);
             } else {
                 incorrectCounter.increment();
-                // statusを変更したmoraを生成する
-                return;
+                m = updateIncorrect(m);
+                break;
             }
         }
+        console.log(m);
+        setMoras(() => m);
+        clear();
     }, [inputs]);
-
-    const forward = () => {
-        router.push("/result");
-    };
-
-    const backward = () => {
-        router.push("/top");
-    };
 
     return (
         <InGamePresentation
             sentence={sentence}
-            autocompleates={[]}
+            autocompleates={autoCompleate}
             handleTimeup={forward}
             handleRefetch={(level: number, difficulty: number) =>
                 refetch({

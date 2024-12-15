@@ -13,7 +13,7 @@ export const InGamePresentation: React.FC<{
     autocompleates: AutoCompleateType[];
     handleTimeup: () => void;
     handleRefetch: (level: number, difficulty: number) => void;
-}> = ({ sentence, autocompleates, handleTimeup, handleRefetch }) => {
+}> = ({ sentence, autocompleates, handleTimeup }) => {
     return (
         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
             <div />
