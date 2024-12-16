@@ -117,12 +117,6 @@ export const InGameContainer: React.FC = () => {
             sentence={sentence}
             autocompleates={toAutoCompleate(moras)}
             handleTimeup={forward}
-            handleRefetch={(level: number, difficulty: number) =>
-                refetch({
-                    level: level,
-                    difficulty: difficulty,
-                })
-            }
         />
     );
 };
