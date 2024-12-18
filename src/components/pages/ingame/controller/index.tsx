@@ -78,6 +78,7 @@ export const InGameContainer: React.FC = () => {
         }
 
         let m: MoraWithStatus[] = [...morasRef.current];
+        if (m.length == 0) return;
         totalCounter.increment();
         if (isTypingCorrect(m, event.key)) {
             correctCounter.increment();
