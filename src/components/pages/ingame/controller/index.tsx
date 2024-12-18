@@ -55,7 +55,7 @@ export const InGameContainer: React.FC = () => {
         convertJaToRomajiTokens(sentence.ruby).then((moras) => {
             setMoras(toMoraWithStatus(moras));
         });
-    }, [sentence.ruby, convertJaToRomajiTokens, toMoraWithStatus]);
+    }, [sentence.ruby]);
 
     React.useEffect(() => {
         convertTokens();
