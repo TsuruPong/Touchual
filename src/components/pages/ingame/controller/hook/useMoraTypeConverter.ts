@@ -30,10 +30,8 @@ export const useMoraTypeConverter = () => {
         if (first) {
             if (first.status == "correct") {
                 r.push({ char: first.val, kind: LetterKind.COLLECT } as AutoCompleate);
-            } else if (first.status == "incorrect") {
-                r.push({ char: first.val, kind: LetterKind.INCOLLECT } as AutoCompleate);
             } else {
-                r.push({ char: first.val, kind: LetterKind.EMPTY } as AutoCompleate);
+                r.push({ char: first.val, kind: LetterKind.INCOLLECT } as AutoCompleate);
             }
             return getCorrectNodes(first.children, r);
         }
