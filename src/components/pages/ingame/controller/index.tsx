@@ -19,10 +19,10 @@ export const InGameContainer: React.FC = () => {
         ruby: string;
     }>({ text: "", ruby: "" });
     const router = useRouter();
-    const { inputs, clear } = useKeyboardInput();
     const { convertJaToRomajiTokens } = useTokenizer();
     const { isTypingCorrect } = useTypingValidator();
     const [moras, setMoras] = React.useState<MoraWithStatus[]>([]);
+    const morasRef = React.useRef<MoraWithStatus[]>([]);
     const { toMoraWithStatus, toAutoCompleate } = useMoraTypeConverter();
     const { updateCorrect, updateIncorrect } = useUpdateMora();
     //const [level, setLevel] = React.useState<number>(1);
@@ -34,14 +34,6 @@ export const InGameContainer: React.FC = () => {
     const { data, error, loading, refetch } = useGetApproxSentenceQuery({
         variables: { level: 1, difficulty: 1.0 },
     });
-
-    const forward = React.useCallback(() => {
-        //router.push("/result");
-    }, []);
-
-    const backward = React.useCallback(() => {
-        router.push("/top");
-    }, []);
 
     React.useEffect(() => {
         let ignore = false;
@@ -63,11 +55,15 @@ export const InGameContainer: React.FC = () => {
         convertJaToRomajiTokens(sentence.ruby).then((moras) => {
             setMoras(toMoraWithStatus(moras));
         });
-    }, [sentence.text]);
+    }, [sentence.ruby, convertJaToRomajiTokens, toMoraWithStatus]);
 
     React.useEffect(() => {
         convertTokens();
     }, [convertTokens]);
+
+    React.useEffect(() => {
+        morasRef.current = moras;
+    }, [moras]);
 
     if (moras.length != 0 && moras.every((m) => m.status == "correct")) {
         refetch({
@@ -76,41 +72,33 @@ export const InGameContainer: React.FC = () => {
         });
     }
 
-    if (inputs.some((key) => key.code == "Escape")) {
-        backward();
-        return;
-    }
+    const handleKeydown = (event: KeyboardEvent) => {
+        if (event.code == "Escape") {
+            backward();
+        }
 
-    React.useEffect(() => {
-        if (inputs.length == 0) return;
-        if (
-            !moras ||
-            moras.length == 0 ||
-            moras.every((m) => m.node.length == 0) ||
-            moras.every((m) => m.status == "correct")
-        ) {
-            return;
+        let m: MoraWithStatus[] = [...morasRef.current];
+        totalCounter.increment();
+        if (isTypingCorrect(m, event.key)) {
+            correctCounter.increment();
+            m = updateCorrect(m, event.key);
+        } else {
+            incorrectCounter.increment();
+            m = updateIncorrect(m);
         }
-        let change = false;
-        let m: MoraWithStatus[] = [...moras];
-        for (const input of inputs) {
-            totalCounter.increment();
-            if (isTypingCorrect(moras, input.key)) {
-                correctCounter.increment();
-                m = updateCorrect(m, input.key);
-                change = true;
-            } else {
-                incorrectCounter.increment();
-                m = updateIncorrect(m);
-                change = true;
-                break;
-            }
-        }
-        if (change) {
-            setMoras(() => m);
-        }
-        clear();
-    }, [inputs]);
+
+        setMoras(() => m);
+    };
+
+    useKeyboardInput(handleKeydown);
+
+    const forward = React.useCallback(() => {
+        router.push("/result");
+    }, [router]);
+
+    const backward = React.useCallback(() => {
+        router.push("/top");
+    }, [router]);
 
     return (
         <InGamePresentation

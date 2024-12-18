@@ -6,19 +6,16 @@ import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useRouter } from "next/navigation";
 
 export const TopContainer: React.FC = () => {
-    const { inputs, clear } = useKeyboardInput();
     const router = useRouter();
 
-    React.useEffect(() => {
-        if (inputs.some((k) => k.code == "Space")) {
-            forward();
-            clear();
-        }
-        if (inputs.some((k) => k.code == "Escape")) {
+    useKeyboardInput((event: KeyboardEvent) => {
+        if (event.code == "Escape") {
             backward();
-            clear();
         }
-    }, [inputs]);
+        if (event.code == "Space") {
+            forward();
+        }
+    });
 
     const forward = () => {
         router.push("/cd");

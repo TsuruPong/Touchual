@@ -22,7 +22,7 @@ export const useUpdateMora = () => {
     const updateIncorrect = (moras: MoraWithStatus[]): MoraWithStatus[] => {
         const c = [...moras];
         const m = c.find(m => m.status != "correct");
-        if (!m?.node) throw new Error("");
+        if (!m?.node) return c;
         const n = findTargetMoraNodeRecursively(m.node);
         n.map(nn => nn.status = "incorrect");
         return c;

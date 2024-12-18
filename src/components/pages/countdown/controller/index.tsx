@@ -7,14 +7,13 @@ import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useRouter } from "next/navigation";
 
 export const CountDownContainer: React.FC = () => {
-    const { inputs } = useKeyboardInput();
     const router = useRouter();
 
-    React.useEffect(() => {
-        if (inputs.some((k) => k.code == "Escape")) {
+    useKeyboardInput((event: KeyboardEvent) => {
+        if (event.code == "Escape") {
             backward();
         }
-    }, [inputs]);
+    });
 
     const forward = () => {
         router.push("/game");
