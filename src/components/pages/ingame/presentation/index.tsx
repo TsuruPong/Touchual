@@ -11,15 +11,15 @@ import { AutoCompleate } from "./autocompleate";
 export const InGamePresentation: React.FC<{
     sentence: { text: string; ruby: string };
     autocompleates: AutoCompleateType[];
-    handleTimeup: () => void;
-}> = ({ sentence, autocompleates, handleTimeup }) => {
+    time: number;
+}> = ({ sentence, autocompleates, time }) => {
     return (
         <div className="h-full grid grid-rows-[0.1fr,1fr,0.1fr] grid-flow-row gap-7">
             <div />
             <div className="flex justify-center items-center">
                 <div className="w-fit flex flex-col">
                     <div className="select-none text text-2xl w-full h-[40px] flex items-center">
-                        <InGameTimer callback={handleTimeup} />
+                        <InGameTimer time={time} />
                     </div>
                     <div className="select-none text text-2xl w-full flex items-center">
                         <EngText>{sentence.text}</EngText>
