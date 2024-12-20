@@ -7,7 +7,7 @@ import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useIndicator } from "./hook/useIndicator";
 import { InGamePresentation } from "../presentation";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
-import { useMora } from "./hook/useMora";
+import { useMoraHandler } from "./hook/useMoraHandler";
 import { useTypingHandler } from "./hook/useTypingHandler";
 
 export const InGameContainer: React.FC = () => {
@@ -16,7 +16,7 @@ export const InGameContainer: React.FC = () => {
         text: string;
         ruby: string;
     }>({ text: "", ruby: "" });
-    const moraHandler = useMora(sentence);
+    const moraHandler = useMoraHandler(sentence);
     //const morasRef = React.useRef<MoraWithStatus[]>(moraHandler.moras);
     const typingHandler = useTypingHandler(
         moraHandler.moras,

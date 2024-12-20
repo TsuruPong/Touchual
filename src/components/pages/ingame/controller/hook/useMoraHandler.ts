@@ -4,7 +4,7 @@ import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
 import { AutoCompleate } from "../../presentation/autocompleate/type";
 import { LetterKind } from "../../presentation/letter/type";
 
-export const useMora = (
+export const useMoraHandler = (
     sentence: { text: string, ruby: string }
 ) => {
     const { moras, setMoras } = tokenizer(sentence);
