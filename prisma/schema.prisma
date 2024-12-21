@@ -9,13 +9,14 @@ generator client {
 }
 
 model Sentences {
+  id                 Int                 @default(autoincrement())
   text               String
   ruby               String
   SentenceIndicators SentenceIndicators?
 
-  @@id([text, ruby])
+  @@id([id])
   @@unique([text, ruby])
-  @@index([text])
+  @@index([text, ruby])
 }
 
 model SentenceIndicators {
@@ -26,6 +27,5 @@ model SentenceIndicators {
   difficulty Decimal   @db.Decimal(5, 2)
 
   @@id([text, ruby])
-  @@unique([text, ruby])
-  @@index([text, level, difficulty])
+  @@index([level, difficulty])
 }

@@ -30,6 +30,7 @@ export type QueryGetApproxSentenceArgs = {
 
 export type Sentence = {
   __typename?: 'Sentence';
+  id: Scalars['Int']['output'];
   ruby: Scalars['String']['output'];
   text: Scalars['String']['output'];
 };
@@ -85,8 +86,8 @@ export function useGetApproxSentenceLazyQuery(baseOptions?: Apollo.LazyQueryHook
           const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
         }
-export function useGetApproxSentenceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
+export function useGetApproxSentenceSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
           return Apollo.useSuspenseQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
         }
 export type GetApproxSentenceQueryHookResult = ReturnType<typeof useGetApproxSentenceQuery>;
