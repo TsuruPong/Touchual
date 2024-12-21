@@ -1,44 +1,31 @@
-import * as React from "react";
 import { Mora, MoraNode, tokenize } from "manimani"
 import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
 import { AutoCompleate } from "../../presentation/autocompleate/type";
 import { LetterKind } from "../../presentation/letter/type";
 
-export const useMoraHandler = (
-    sentence: { text: string, ruby: string }
-) => {
-    const { moras, setMoras } = tokenizer(sentence);
-    const { toAutoCompleate } = converter();
-    const { updateCorrect, updateIncorrect } = updator();
-
+export const useMoraHandler = () => {
+    const tokenizer = useMoraTokenizer();
+    const converter = useMoraConverter();
+    const updator = useMoraUpdator();
     return {
-        moras,
-        setMoras,
-        autocompleate: toAutoCompleate(moras),
-        updateCorrect,
-        updateIncorrect
+        tokenizer,
+        converter,
+        updator
     };
-}
+};
 
-const tokenizer = (sentence: { text: string, ruby: string }) => {
-    const [moras, setMoras] = React.useState<MoraWithStatus[]>([]);
-    const { toMoraWithStatus } = converter();
-    const toTokens = React.useCallback(async() => {
-        const moras: Mora[] = await new Promise(resolve => {
+const useMoraTokenizer = () => {
+    const toTokens = async(sentence: { text: string, ruby: string }): Promise<Mora[]> => {
+        return await new Promise(resolve => {
             tokenize("/dict", sentence.ruby, (moras: Mora[]) => {
                 resolve(moras);
             })
         });
-        const withStatus = toMoraWithStatus(moras);
-        setMoras(() => withStatus);
-    }, [sentence.ruby]);
-    React.useEffect(() => {
-        toTokens();
-    }, [toTokens])
-    return { moras, setMoras };
+    };
+    return { toTokens };
 }
 
-const converter = () => {
+const useMoraConverter = () => {
     const toMoraWithStatus = (moras: Mora[]): MoraWithStatus[] => {
         return moras.map((mora) => ({
             ...mora,
@@ -100,31 +87,24 @@ const converter = () => {
     return { toMoraWithStatus, toAutoCompleate };
 }
 
-const updator = () => {
-    const updateCorrect = (moras: MoraWithStatus[], input: string): MoraWithStatus[] => {
+const useMoraUpdator = () => {
+    const updateStatus = (moras: MoraWithStatus[], input: string | null, status: 'correct' | 'incorrect'): MoraWithStatus[] => {
         const c = [...moras];
-        const m = c.find(m => m.status != "correct");
+        const m = c.find(m => m.status !== 'correct');
         if (!m?.node) return c;
+
         const n = findTargetMoraNodeRecursively(m.node);
-        n.map(nn => {
-            if (nn.val == input) {
-                nn.status = "correct";
-                if (nn.children.length == 0) {
-                    m.status = "correct";
+        n.forEach(nn => {
+            if (input && nn.val === input) {
+                nn.status = 'correct';
+                if (nn.children.length === 0) {
+                    m.status = 'correct';
                 }
             } else {
-                nn.status = "unanswered";
+                nn.status = status;
             }
-        })
-        return c;
-    }
+        });
 
-    const updateIncorrect = (moras: MoraWithStatus[]): MoraWithStatus[] => {
-        const c = [...moras];
-        const m = c.find(m => m.status != "correct");
-        if (!m?.node) return c;
-        const n = findTargetMoraNodeRecursively(m.node);
-        n.map(nn => nn.status = "incorrect");
         return c;
     }
 
@@ -137,5 +117,8 @@ const updator = () => {
         }
     }
 
-    return { updateCorrect, updateIncorrect };
+    return {
+        updateCorrect: (moras: MoraWithStatus[], input: string) => updateStatus(moras, input, 'correct'),
+        updateIncorrect: (moras: MoraWithStatus[]) => updateStatus(moras, null, 'incorrect')
+    };
 }

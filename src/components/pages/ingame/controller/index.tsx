@@ -9,20 +9,20 @@ import { InGamePresentation } from "../presentation";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
 import { useMoraHandler } from "./hook/useMoraHandler";
 import { useTypingHandler } from "./hook/useTypingHandler";
+import { useMoraStore } from "./hook/useMoraStore";
 
 export const InGameContainer: React.FC = () => {
     const router = useRouter();
+    const moras = useMoraStore((state) => state.moras);
+    const updateMoras = useMoraStore((state) => state.updateMoras);
     const [sentence, setSentence] = React.useState<{
         text: string;
         ruby: string;
     }>({ text: "", ruby: "" });
-    const moraHandler = useMoraHandler(sentence);
-    //const morasRef = React.useRef<MoraWithStatus[]>(moraHandler.moras);
+    const moraHandler = useMoraHandler();
     const typingHandler = useTypingHandler(
-        moraHandler.moras,
-        moraHandler.setMoras,
-        moraHandler.updateCorrect,
-        moraHandler.updateIncorrect
+        moraHandler.updator.updateCorrect,
+        moraHandler.updator.updateIncorrect
     );
     const { time, start } = useTimer(TimerKind.SUB, 60);
     const { wpm, acc } = useIndicator(
@@ -51,22 +51,33 @@ export const InGameContainer: React.FC = () => {
         };
     }, [loading, data]);
 
-    if (
-        moraHandler.moras.length != 0 &&
-        moraHandler.moras.every((m) => m.status == "correct")
-    ) {
+    const convertTokens = React.useCallback(() => {
+        if (!sentence.ruby) return;
+        moraHandler.tokenizer.toTokens(sentence).then((moras) => {
+            updateMoras(moraHandler.converter.toMoraWithStatus(moras));
+        });
+    }, [sentence.ruby]);
+
+    React.useEffect(() => {
+        convertTokens();
+    }, [convertTokens]);
+
+    if (moras.length != 0 && moras.every((m) => m.status == "correct")) {
         refetch({
             level: 0,
             difficulty: 0,
         });
     }
 
-    const handleKeydown = (event: KeyboardEvent) => {
-        if (event.key == "Escape") {
-            backward();
-        }
-        typingHandler.handleTyping(event);
-    };
+    const handleKeydown = React.useCallback(
+        (event: KeyboardEvent) => {
+            if (event.key == "Escape") {
+                backward();
+            }
+            typingHandler.handleTyping(event);
+        },
+        [moras]
+    );
 
     useKeyboardInput(handleKeydown);
 
@@ -90,7 +101,7 @@ export const InGameContainer: React.FC = () => {
     return (
         <InGamePresentation
             sentence={sentence}
-            autocompleates={moraHandler.autocompleate}
+            autocompleates={moraHandler.converter.toAutoCompleate(moras)}
             time={time}
         />
     );

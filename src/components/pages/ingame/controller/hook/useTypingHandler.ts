@@ -1,19 +1,21 @@
 import { useCounter } from "@/hooks/useCounter";
 import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
+import { useMoraStore } from "./useMoraStore";
+import React from "react";
 
 export const useTypingHandler = (
-    moras: MoraWithStatus[],
-    setMoras: (moras: MoraWithStatus[] | (() => MoraWithStatus[])) => void,
     updateCorrect: (moras: MoraWithStatus[], input: string) => MoraWithStatus[],
     updateIncorrect: (moras: MoraWithStatus[]) => MoraWithStatus[]
 ) => {
+    const moras = useMoraStore((state) => state.moras);
+    const moraRef = React.useRef(moras);
+    const updateMoras = useMoraStore((state) => state.updateMoras);
     const { total, correct, incorrect} = counter();
     const { isTypingCorrect } = validator();
     const handleTyping = (event: KeyboardEvent) => {
-        console.log(moras);
-        
-        if (moras.length == 0) return;
-        let m: MoraWithStatus[] = [...moras];
+        const target = moraRef.current;
+        if (target.length == 0) return;
+        let m: MoraWithStatus[] = [...target];
         if (m.length == 0) return;
         total.increment();
         if (isTypingCorrect(m, event.key)) {
@@ -23,8 +25,12 @@ export const useTypingHandler = (
             incorrect.increment();
             m = updateIncorrect(m);
         }
-        setMoras(() => m);
+        updateMoras(m);
     }
+
+    React.useEffect(() => {
+        moraRef.current = moras;
+    }, [moras])
 
     return { total: total.count, correct: correct.count, incorrect: incorrect.count, handleTyping }
 }
