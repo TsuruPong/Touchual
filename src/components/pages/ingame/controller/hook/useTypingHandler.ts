@@ -1,7 +1,7 @@
+import React from "react";
 import { useCounter } from "@/hooks/useCounter";
 import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
 import { useMoraStore } from "./useMoraStore";
-import React from "react";
 
 export const useTypingHandler = (
     updateCorrect: (moras: MoraWithStatus[], input: string) => MoraWithStatus[],
