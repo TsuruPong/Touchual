@@ -1,24 +1,19 @@
-type Sentence {
+type TypingTheme {
     id: Int!
     text: String!
     ruby: String!
-}
-
-type SentenceIndicators {
-    text: String!
-    ruby: String!
-    level: Int!
-    difficulty: Float!
+    moras: String!
 }
 
 type Query {
-    getApproxSentence(id: Int, level: Int!, difficulty: Float!): Sentence
+    getTypingTheme(id: Int, level: Int!, difficulty: Float!): TypingTheme
 }
 
-query getApproxSentence($id: Int, $level: Int!, $difficulty: Float!) {
-    getApproxSentence(id: $id, level: $level, difficulty: $difficulty) {
+query getTypingTheme($id: Int, $level: Int!, $difficulty: Float!) {
+    getTypingTheme(id: $id, level: $level, difficulty: $difficulty) {
         id
         text
         ruby
+        moras
     }
 }

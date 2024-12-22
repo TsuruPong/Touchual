@@ -19,62 +19,56 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getApproxSentence?: Maybe<Sentence>;
+  getTypingTheme?: Maybe<TypingTheme>;
 };
 
 
-export type QueryGetApproxSentenceArgs = {
+export type QueryGetTypingThemeArgs = {
   difficulty: Scalars['Float']['input'];
   id?: InputMaybe<Scalars['Int']['input']>;
   level: Scalars['Int']['input'];
 };
 
-export type Sentence = {
-  __typename?: 'Sentence';
+export type TypingTheme = {
+  __typename?: 'TypingTheme';
   id: Scalars['Int']['output'];
+  moras: Scalars['String']['output'];
   ruby: Scalars['String']['output'];
   text: Scalars['String']['output'];
 };
 
-export type SentenceIndicators = {
-  __typename?: 'SentenceIndicators';
-  difficulty: Scalars['Float']['output'];
-  level: Scalars['Int']['output'];
-  ruby: Scalars['String']['output'];
-  text: Scalars['String']['output'];
-};
-
-export type GetApproxSentenceQueryVariables = Exact<{
+export type GetTypingThemeQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
   level: Scalars['Int']['input'];
   difficulty: Scalars['Float']['input'];
 }>;
 
 
-export type GetApproxSentenceQuery = { __typename?: 'Query', getApproxSentence?: { __typename?: 'Sentence', id: number, text: string, ruby: string } | null };
+export type GetTypingThemeQuery = { __typename?: 'Query', getTypingTheme?: { __typename?: 'TypingTheme', id: number, text: string, ruby: string, moras: string } | null };
 
 
-export const GetApproxSentenceDocument = gql`
-    query getApproxSentence($id: Int, $level: Int!, $difficulty: Float!) {
-  getApproxSentence(id: $id, level: $level, difficulty: $difficulty) {
+export const GetTypingThemeDocument = gql`
+    query getTypingTheme($id: Int, $level: Int!, $difficulty: Float!) {
+  getTypingTheme(id: $id, level: $level, difficulty: $difficulty) {
     id
     text
     ruby
+    moras
   }
 }
     `;
 
 /**
- * __useGetApproxSentenceQuery__
+ * __useGetTypingThemeQuery__
  *
- * To run a query within a React component, call `useGetApproxSentenceQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetApproxSentenceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetTypingThemeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTypingThemeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetApproxSentenceQuery({
+ * const { data, loading, error } = useGetTypingThemeQuery({
  *   variables: {
  *      id: // value for 'id'
  *      level: // value for 'level'
@@ -82,19 +76,19 @@ export const GetApproxSentenceDocument = gql`
  *   },
  * });
  */
-export function useGetApproxSentenceQuery(baseOptions: Apollo.QueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables> & ({ variables: GetApproxSentenceQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetTypingThemeQuery(baseOptions: Apollo.QueryHookOptions<GetTypingThemeQuery, GetTypingThemeQueryVariables> & ({ variables: GetTypingThemeQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
+        return Apollo.useQuery<GetTypingThemeQuery, GetTypingThemeQueryVariables>(GetTypingThemeDocument, options);
       }
-export function useGetApproxSentenceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
+export function useGetTypingThemeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTypingThemeQuery, GetTypingThemeQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
+          return Apollo.useLazyQuery<GetTypingThemeQuery, GetTypingThemeQueryVariables>(GetTypingThemeDocument, options);
         }
-export function useGetApproxSentenceSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>) {
+export function useGetTypingThemeSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTypingThemeQuery, GetTypingThemeQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>(GetApproxSentenceDocument, options);
+          return Apollo.useSuspenseQuery<GetTypingThemeQuery, GetTypingThemeQueryVariables>(GetTypingThemeDocument, options);
         }
-export type GetApproxSentenceQueryHookResult = ReturnType<typeof useGetApproxSentenceQuery>;
-export type GetApproxSentenceLazyQueryHookResult = ReturnType<typeof useGetApproxSentenceLazyQuery>;
-export type GetApproxSentenceSuspenseQueryHookResult = ReturnType<typeof useGetApproxSentenceSuspenseQuery>;
-export type GetApproxSentenceQueryResult = Apollo.QueryResult<GetApproxSentenceQuery, GetApproxSentenceQueryVariables>;
+export type GetTypingThemeQueryHookResult = ReturnType<typeof useGetTypingThemeQuery>;
+export type GetTypingThemeLazyQueryHookResult = ReturnType<typeof useGetTypingThemeLazyQuery>;
+export type GetTypingThemeSuspenseQueryHookResult = ReturnType<typeof useGetTypingThemeSuspenseQuery>;
+export type GetTypingThemeQueryResult = Apollo.QueryResult<GetTypingThemeQuery, GetTypingThemeQueryVariables>;
