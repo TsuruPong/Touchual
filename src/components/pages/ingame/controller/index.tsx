@@ -4,32 +4,33 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
-import { useTypingValidator } from "./hook/useTypingValidator";
-import { useTypingCounter } from "./hook/useTypingCounter";
 import { useIndicator } from "./hook/useIndicator";
 import { InGamePresentation } from "../presentation";
-import { useTokenizer } from "./hook/useTokenizer";
-import { MoraWithStatus } from "./type/extends/mora";
-import { useMoraTypeConverter } from "./hook/useMoraTypeConverter";
-import { useUpdateMora } from "./hook/useUpdateMora";
+import { TimerKind, useTimer } from "@/hooks/useTimer";
+import { useMoraHandler } from "./hook/useMoraHandler";
+import { useTypingHandler } from "./hook/useTypingHandler";
+import { useMoraStore } from "./hook/useMoraStore";
 
 export const InGameContainer: React.FC = () => {
+    const router = useRouter();
+    const moras = useMoraStore((state) => state.moras);
+    const updateMoras = useMoraStore((state) => state.updateMoras);
     const [sentence, setSentence] = React.useState<{
         text: string;
         ruby: string;
     }>({ text: "", ruby: "" });
-    const router = useRouter();
-    const { convertJaToRomajiTokens } = useTokenizer();
-    const { isTypingCorrect } = useTypingValidator();
-    const [moras, setMoras] = React.useState<MoraWithStatus[]>([]);
-    const morasRef = React.useRef<MoraWithStatus[]>([]);
-    const { toMoraWithStatus, toAutoCompleate } = useMoraTypeConverter();
-    const { updateCorrect, updateIncorrect } = useUpdateMora();
-    //const [level, setLevel] = React.useState<number>(1);
-    //const [difficulty, setDifficulty] = React.useState<number>(1.0);
-    const { totalCounter, correctCounter, incorrectCounter } =
-        useTypingCounter();
-    const { wpm, acc } = useIndicator();
+    const moraHandler = useMoraHandler();
+    const typingHandler = useTypingHandler(
+        moraHandler.updator.updateCorrect,
+        moraHandler.updator.updateIncorrect
+    );
+    const { time, start } = useTimer(TimerKind.SUB, 60);
+    const { wpm, acc } = useIndicator(
+        typingHandler.total,
+        typingHandler.correct,
+        typingHandler.incorrect,
+        time
+    );
 
     const { data, error, loading, refetch } = useGetApproxSentenceQuery({
         variables: { level: 1, difficulty: 1.0 },
@@ -52,8 +53,8 @@ export const InGameContainer: React.FC = () => {
 
     const convertTokens = React.useCallback(() => {
         if (!sentence.ruby) return;
-        convertJaToRomajiTokens(sentence.ruby).then((moras) => {
-            setMoras(toMoraWithStatus(moras));
+        moraHandler.tokenizer.toTokens(sentence).then((moras) => {
+            updateMoras(moraHandler.converter.toMoraWithStatus(moras));
         });
     }, [sentence.ruby]);
 
@@ -61,51 +62,47 @@ export const InGameContainer: React.FC = () => {
         convertTokens();
     }, [convertTokens]);
 
-    React.useEffect(() => {
-        morasRef.current = moras;
-    }, [moras]);
-
     if (moras.length != 0 && moras.every((m) => m.status == "correct")) {
         refetch({
-            level: 2,
-            difficulty: 2.2,
+            level: 0,
+            difficulty: 0,
         });
     }
 
-    const handleKeydown = (event: KeyboardEvent) => {
-        if (event.code == "Escape") {
-            backward();
-        }
-
-        let m: MoraWithStatus[] = [...morasRef.current];
-        if (m.length == 0) return;
-        totalCounter.increment();
-        if (isTypingCorrect(m, event.key)) {
-            correctCounter.increment();
-            m = updateCorrect(m, event.key);
-        } else {
-            incorrectCounter.increment();
-            m = updateIncorrect(m);
-        }
-
-        setMoras(() => m);
-    };
+    const handleKeydown = React.useCallback(
+        (event: KeyboardEvent) => {
+            if (event.key == "Escape") {
+                backward();
+            }
+            typingHandler.handleTyping(event);
+        },
+        [moras]
+    );
 
     useKeyboardInput(handleKeydown);
 
     const forward = React.useCallback(() => {
-        router.push("/result");
+        //router.push("/result");
     }, [router]);
 
     const backward = React.useCallback(() => {
         router.push("/top");
     }, [router]);
 
+    React.useEffect(() => {
+        start();
+    }, []);
+
+    if (time < 0) {
+        stop();
+        forward();
+    }
+
     return (
         <InGamePresentation
             sentence={sentence}
-            autocompleates={toAutoCompleate(moras)}
-            handleTimeup={forward}
+            autocompleates={moraHandler.converter.toAutoCompleate(moras)}
+            time={time}
         />
     );
 };

@@ -1,4 +1,5 @@
 type Sentence {
+    id: Int!
     text: String!
     ruby: String!
 }
@@ -11,11 +12,11 @@ type SentenceIndicators {
 }
 
 type Query {
-    getApproxSentence(level: Int!, difficulty: Float!): SentenceIndicators
+    getApproxSentence(id: Int, level: Int!, difficulty: Float!): Sentence
 }
 
-query getApproxSentence($level: Int!, $difficulty: Float!) {
-    getApproxSentence(level: $level, difficulty: $difficulty) {
+query getApproxSentence($id: Int, $level: Int!, $difficulty: Float!) {
+    getApproxSentence(id: $id, level: $level, difficulty: $difficulty) {
         text
         ruby
     }
