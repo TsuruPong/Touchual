@@ -11,7 +11,6 @@ interface result {
 }
 
 export const getTypingThemeResolver = async(args: {id: number, level: number, difficulty: number}) => {
-    const idCondition = args.id ? `id = ${args.id}` : "1=1";
     const result = await prisma.$queryRaw<result[]>`
         with sentences_indicators as (
             select
@@ -37,12 +36,10 @@ export const getTypingThemeResolver = async(args: {id: number, level: number, di
                         difficulty
                     from
                     sentences_indicators
-                    where
-                    ($1::int IS NULL OR id = $1)
                     order by abs(difficulty - ${args.difficulty}) asc
                     limit 1
                 )
-                and level = 1
+                and level = ${args.level}
         )
 
         select
@@ -54,6 +51,9 @@ export const getTypingThemeResolver = async(args: {id: number, level: number, di
         inner join approx_id ai
         on si.id = ai.id
     `;
+    if (!result || result.length === 0) {
+        throw new Error("No typing theme found for the given parameters.");
+    }
     const { id, text, ruby } = result[0];
     const moras: Mora[] = await toTokens({ text, ruby });
     const withStatus: MoraWithStatus[] = toMoraWithStatus(moras);
