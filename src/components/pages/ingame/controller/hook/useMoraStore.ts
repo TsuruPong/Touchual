@@ -1,5 +1,5 @@
 import { create } from "zustand"; 
-import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
+import { MoraWithStatus } from "../type/extends/mora";
 
 type MoraStore = {
     moras: MoraWithStatus[];
