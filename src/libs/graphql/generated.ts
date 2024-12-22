@@ -19,12 +19,13 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getApproxSentence?: Maybe<SentenceIndicators>;
+  getApproxSentence?: Maybe<Sentence>;
 };
 
 
 export type QueryGetApproxSentenceArgs = {
   difficulty: Scalars['Float']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   level: Scalars['Int']['input'];
 };
 
@@ -44,17 +45,19 @@ export type SentenceIndicators = {
 };
 
 export type GetApproxSentenceQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
   level: Scalars['Int']['input'];
   difficulty: Scalars['Float']['input'];
 }>;
 
 
-export type GetApproxSentenceQuery = { __typename?: 'Query', getApproxSentence?: { __typename?: 'SentenceIndicators', text: string, ruby: string } | null };
+export type GetApproxSentenceQuery = { __typename?: 'Query', getApproxSentence?: { __typename?: 'Sentence', id: number, text: string, ruby: string } | null };
 
 
 export const GetApproxSentenceDocument = gql`
-    query getApproxSentence($level: Int!, $difficulty: Float!) {
-  getApproxSentence(level: $level, difficulty: $difficulty) {
+    query getApproxSentence($id: Int, $level: Int!, $difficulty: Float!) {
+  getApproxSentence(id: $id, level: $level, difficulty: $difficulty) {
+    id
     text
     ruby
   }
@@ -73,6 +76,7 @@ export const GetApproxSentenceDocument = gql`
  * @example
  * const { data, loading, error } = useGetApproxSentenceQuery({
  *   variables: {
+ *      id: // value for 'id'
  *      level: // value for 'level'
  *      difficulty: // value for 'difficulty'
  *   },

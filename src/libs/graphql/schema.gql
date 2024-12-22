@@ -17,6 +17,7 @@ type Query {
 
 query getApproxSentence($id: Int, $level: Int!, $difficulty: Float!) {
     getApproxSentence(id: $id, level: $level, difficulty: $difficulty) {
+        id
         text
         ruby
     }
