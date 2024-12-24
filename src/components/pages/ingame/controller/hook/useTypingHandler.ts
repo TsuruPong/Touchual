@@ -1,15 +1,17 @@
 import React from "react";
 import { useCounter } from "@/hooks/useCounter";
-import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
-import { useMoraStore } from "./useMoraStore";
+import { MoraNodeWithStatus, MoraWithStatus } from "@/types/extends/manimani";
+import { useTypingThemeStore } from "./useTypingThemeStore";
 
 export const useTypingHandler = (
     updateCorrect: (moras: MoraWithStatus[], input: string) => MoraWithStatus[],
     updateIncorrect: (moras: MoraWithStatus[]) => MoraWithStatus[]
 ) => {
-    const moras = useMoraStore((state) => state.moras);
+    const moras = useTypingThemeStore((state) => state.moras);
+    const updateMoras = useTypingThemeStore(
+        (state) => state.updateMoras
+    );
     const moraRef = React.useRef(moras);
-    const updateMoras = useMoraStore((state) => state.updateMoras);
     const { total, correct, incorrect} = counter();
     const { isTypingCorrect } = validator();
     const handleTyping = (event: KeyboardEvent) => {
