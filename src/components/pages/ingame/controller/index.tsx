@@ -2,23 +2,34 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useGetApproxSentenceQuery } from "@/libs/graphql/generated";
 import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useIndicator } from "./hook/useIndicator";
 import { InGamePresentation } from "../presentation";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
 import { useMoraHandler } from "./hook/useMoraHandler";
 import { useTypingHandler } from "./hook/useTypingHandler";
-import { useMoraStore } from "./hook/useMoraStore";
+import { useTypingTheme } from "./hook/useTypingTheme";
+import { useTypingThemeStore } from "./hook/useTypingThemeStore";
 
 export const InGameContainer: React.FC = () => {
     const router = useRouter();
-    const moras = useMoraStore((state) => state.moras);
-    const updateMoras = useMoraStore((state) => state.updateMoras);
-    const [sentence, setSentence] = React.useState<{
-        text: string;
-        ruby: string;
-    }>({ text: "", ruby: "" });
+
+    const { fetchTypingTheme } = useTypingTheme();
+    const typingThemeId = useTypingThemeStore((state) => state.id);
+    const updateTypingThemeId = useTypingThemeStore((state) => state.updateId);
+    const typingThemeText = useTypingThemeStore((state) => state.text);
+    const updateTypingThemeText = useTypingThemeStore(
+        (state) => state.updateText
+    );
+    const typingThemeRuby = useTypingThemeStore((state) => state.ruby);
+    const updateTypingThemeRuby = useTypingThemeStore(
+        (state) => state.updateRuby
+    );
+    const typingThemeMoras = useTypingThemeStore((state) => state.moras);
+    const updateTypingThemeMoras = useTypingThemeStore(
+        (state) => state.updateMoras
+    );
+
     const moraHandler = useMoraHandler();
     const typingHandler = useTypingHandler(
         moraHandler.updator.updateCorrect,
@@ -32,52 +43,34 @@ export const InGameContainer: React.FC = () => {
         time
     );
 
-    const { data, error, loading, refetch } = useGetApproxSentenceQuery({
-        variables: { level: 1, difficulty: 1.0 },
-    });
+    const fetchCurrectTypingTheme = async (
+        level: number,
+        difficulty: number,
+        id?: number
+    ) => {
+        const theme = await fetchTypingTheme(level, difficulty, id);
+        updateTypingThemeId(theme.id);
+        updateTypingThemeText(theme.text);
+        updateTypingThemeRuby(theme.ruby);
+        updateTypingThemeMoras(theme.moras);
+    };
+
+    const shouldFetch =
+        typingThemeMoras.length == 0 ||
+        (typingThemeMoras.length != 0 &&
+            typingThemeMoras.every((m) => m.status == "correct"));
 
     React.useEffect(() => {
-        let ignore = false;
-        const sentence = data?.getApproxSentence || undefined;
-        if (!sentence?.text && !sentence?.ruby) return;
-        if (!ignore) {
-            setSentence(() => ({
-                text: sentence.text,
-                ruby: sentence.ruby,
-            }));
+        if (!shouldFetch) return;
+        fetchCurrectTypingTheme(1, 1.0, typingThemeId);
+    }, [shouldFetch]);
+
+    const handleKeydown = React.useCallback((event: KeyboardEvent) => {
+        if (event.key == "Escape") {
+            backward();
         }
-        return () => {
-            ignore = true;
-        };
-    }, [loading, data]);
-
-    const convertTokens = React.useCallback(() => {
-        if (!sentence.ruby) return;
-        moraHandler.tokenizer.toTokens(sentence).then((moras) => {
-            updateMoras(moraHandler.converter.toMoraWithStatus(moras));
-        });
-    }, [sentence.ruby]);
-
-    React.useEffect(() => {
-        convertTokens();
-    }, [convertTokens]);
-
-    if (moras.length != 0 && moras.every((m) => m.status == "correct")) {
-        refetch({
-            level: 0,
-            difficulty: 0,
-        });
-    }
-
-    const handleKeydown = React.useCallback(
-        (event: KeyboardEvent) => {
-            if (event.key == "Escape") {
-                backward();
-            }
-            typingHandler.handleTyping(event);
-        },
-        [moras]
-    );
+        typingHandler.handleTyping(event);
+    }, []);
 
     useKeyboardInput(handleKeydown);
 
@@ -100,8 +93,10 @@ export const InGameContainer: React.FC = () => {
 
     return (
         <InGamePresentation
-            sentence={sentence}
-            autocompleates={moraHandler.converter.toAutoCompleate(moras)}
+            sentence={{ text: typingThemeText, ruby: typingThemeRuby }}
+            autocompleates={moraHandler.converter.toAutoCompleate(
+                typingThemeMoras
+            )}
             time={time}
         />
     );
