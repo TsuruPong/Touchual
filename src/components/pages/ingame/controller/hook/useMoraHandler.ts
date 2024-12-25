@@ -1,5 +1,5 @@
 import { Mora, MoraNode, tokenize } from "manimani"
-import { MoraNodeWithStatus, MoraWithStatus } from "../type/extends/mora";
+import { MoraNodeWithStatus, MoraWithStatus } from "@/types/extends/manimani";
 import { AutoCompleate } from "../../presentation/autocompleate/type";
 import { LetterKind } from "../../presentation/letter/type";
 
@@ -88,23 +88,30 @@ const useMoraConverter = () => {
 }
 
 const useMoraUpdator = () => {
-    const updateStatus = (moras: MoraWithStatus[], input: string | null, status: 'correct' | 'incorrect'): MoraWithStatus[] => {
+    const updateCorrect = (moras: MoraWithStatus[], input: string): MoraWithStatus[] => {
         const c = [...moras];
-        const m = c.find(m => m.status !== 'correct');
+        const m = c.find(m => m.status != "correct");
         if (!m?.node) return c;
-
         const n = findTargetMoraNodeRecursively(m.node);
-        n.forEach(nn => {
-            if (input && nn.val === input) {
-                nn.status = 'correct';
-                if (nn.children.length === 0) {
-                    m.status = 'correct';
+        n.map(nn => {
+            if (nn.val == input) {
+                nn.status = "correct";
+                if (nn.children.length == 0) {
+                    m.status = "correct";
                 }
             } else {
-                nn.status = status;
+                nn.status = "unanswered";
             }
-        });
+        })
+        return c;
+    }
 
+    const updateIncorrect = (moras: MoraWithStatus[]): MoraWithStatus[] => {
+        const c = [...moras];
+        const m = c.find(m => m.status != "correct");
+        if (!m?.node) return c;
+        const n = findTargetMoraNodeRecursively(m.node);
+        n.map(nn => nn.status = "incorrect");
         return c;
     }
 
@@ -118,7 +125,7 @@ const useMoraUpdator = () => {
     }
 
     return {
-        updateCorrect: (moras: MoraWithStatus[], input: string) => updateStatus(moras, input, 'correct'),
-        updateIncorrect: (moras: MoraWithStatus[]) => updateStatus(moras, null, 'incorrect')
+        updateCorrect,
+        updateIncorrect
     };
 }
