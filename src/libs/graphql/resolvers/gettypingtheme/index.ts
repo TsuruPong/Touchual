@@ -1,6 +1,7 @@
 import { Mora, MoraNode, tokenize } from "manimani";
 import prisma from "../../../prisma/client"
 import { MoraNodeWithStatus, MoraWithStatus } from "@/types/extends/manimani";
+import { Sql } from "@prisma/client/runtime/library";
 
 interface result {
     id: number,
@@ -24,22 +25,6 @@ export const getTypingThemeResolver = async(args: {id: number, level: number, di
             inner join "SentenceIndicators" as indicator
             on sentence.text = indicator.text
             and sentence.ruby = indicator.ruby
-        ),
-        approx_id as (
-            select
-                id
-            from
-            sentences_indicators
-            where
-                difficulty = (
-                    select
-                        difficulty
-                    from
-                    sentences_indicators
-                    order by abs(difficulty - ${args.difficulty}) asc
-                    limit 1
-                )
-                and level = ${args.level}
         )
 
         select
@@ -48,16 +33,19 @@ export const getTypingThemeResolver = async(args: {id: number, level: number, di
             si.ruby
         from
         sentences_indicators si
-        inner join approx_id ai
-        on si.id = ai.id
+        where si.level = ${args.level}
+        order by abs(difficulty - ${args.difficulty}) asc
     `;
     if (!result || result.length === 0) {
         throw new Error("No typing theme found for the given parameters.");
     }
-    const { id, text, ruby } = result[0];
-    const moras: Mora[] = await toTokens({ text, ruby });
+    const row = result.find(r => r.id != args.id);
+    if (!row) {
+        throw new Error("No typing theme found for the given parameters.");
+    }
+    const moras: Mora[] = await toTokens({ text: row.text, ruby: row.ruby });
     const withStatus: MoraWithStatus[] = toMoraWithStatus(moras);
-    return { id, text, ruby, moras: JSON.stringify(withStatus) };
+    return { id: row.id, text: row.text, ruby: row.ruby, moras: JSON.stringify(withStatus) };
 }
 
 const toTokens = async(sentence: { text: string, ruby: string }): Promise<Mora[]> => {
@@ -79,6 +67,7 @@ const toMoraWithStatus = (moras: Mora[]): MoraWithStatus[] => {
         node: toMoraNodeWithStatus(mora.node)
     }));
 };
+
 const toMoraNodeWithStatus = (nodes: MoraNode[]): MoraNodeWithStatus[] => {
     return nodes.map((node) => ({
         ...node,
