@@ -2,6 +2,7 @@ import React from "react";
 import { useCounter } from "@/hooks/useCounter";
 import { MoraNodeWithStatus, MoraWithStatus } from "@/types/extends/manimani";
 import { useTypingThemeStore } from "./useTypingThemeStore";
+import { TimerKind, useTimer } from "@/hooks/useTimer";
 
 export const useTypingHandler = (
     updateCorrect: (moras: MoraWithStatus[], input: string) => MoraWithStatus[],
@@ -12,8 +13,9 @@ export const useTypingHandler = (
         (state) => state.updateMoras
     );
     const moraRef = React.useRef(moras);
-    const { total, correct, incorrect} = counter();
+    const { total, totalCorrect, totalIncorrect, presentCorrect, presentIncorrect } = counter();
     const { isTypingCorrect } = validator();
+    const { time, start, reset } = useTimer(TimerKind.ADD, 0);
     const handleTyping = (event: KeyboardEvent) => {
         const target = moraRef.current;
         if (target.length == 0) return;
@@ -21,10 +23,12 @@ export const useTypingHandler = (
         if (m.length == 0) return;
         total.increment();
         if (isTypingCorrect(m, event.key)) {
-            correct.increment();
+            totalCorrect.increment();
+            presentCorrect.increment();
             m = updateCorrect(m, event.key);
         } else {
-            incorrect.increment();
+            totalIncorrect.increment();
+            presentIncorrect.increment();
             m = updateIncorrect(m);
         }
         updateMoras(m);
@@ -32,20 +36,46 @@ export const useTypingHandler = (
 
     React.useEffect(() => {
         moraRef.current = moras;
-    }, [moras])
+    }, [moras]);
 
-    return { total: total.count, correct: correct.count, incorrect: incorrect.count, handleTyping }
+    const counts = {
+        totals: {
+            total: total.count,
+            correct: totalCorrect.count,
+            incorrect: totalIncorrect.count
+        },
+        presents: {
+            correct: presentCorrect.count,
+            incorrect: presentIncorrect.count,
+            resetCounts: () => {
+                presentCorrect.reset();
+                presentIncorrect.reset();
+            }        
+        }
+    }
+
+    const timer = {
+        presents: {
+            time,
+            start,
+            reset
+        }
+    }
+
+    return { counts, timer, handleTyping }
 }
 
 const counter = () => {
     const createCounter = () => {
-        const { count, increment } = useCounter();
-        return { count, increment }
+        const { count, increment, decrement, reset } = useCounter();
+        return { count, increment, decrement, reset };
     }
     return {
         total: createCounter(), 
-        correct: createCounter(), 
-        incorrect: createCounter()
+        totalCorrect: createCounter(), 
+        totalIncorrect: createCounter(),
+        presentCorrect: createCounter(),
+        presentIncorrect: createCounter()
     }
 }
 
