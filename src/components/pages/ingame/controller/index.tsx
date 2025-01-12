@@ -35,13 +35,10 @@ export const InGameContainer: React.FC = () => {
         moraHandler.updator.updateCorrect,
         moraHandler.updator.updateIncorrect
     );
-    const { time, start } = useTimer(TimerKind.SUB, 60);
-    const { wpm, acc } = useIndicator(
-        typingHandler.total,
-        typingHandler.correct,
-        typingHandler.incorrect,
-        time
-    );
+    const { time, start, stop } = useTimer(TimerKind.SUB, 60);
+    const { calcWpm, calcAcc, calcProgress } = useIndicator();
+    const [level, setLevel] = React.useState<number>(1);
+    const [difficulty, setDifficulty] = React.useState<number>(0);
 
     const fetchCurrectTypingTheme = async (
         level: number,
@@ -62,7 +59,23 @@ export const InGameContainer: React.FC = () => {
 
     React.useEffect(() => {
         if (!shouldFetch) return;
-        fetchCurrectTypingTheme(1, 1.0, typingThemeId);
+        const indicator = {
+            total: typingHandler.counts.totals.total,
+            correct: typingHandler.counts.presents.correct,
+            incorrect: typingHandler.counts.presents.incorrect,
+            time,
+        };
+        const progress = calcProgress(level, difficulty, indicator);
+        fetchCurrectTypingTheme(
+            progress.level,
+            progress.difficulty,
+            typingThemeId
+        );
+        setLevel(() => progress.level);
+        setDifficulty(() => progress.difficulty);
+        typingHandler.counts.presents.resetCounts();
+        typingHandler.timer.presents.reset();
+        typingHandler.timer.presents.start();
     }, [shouldFetch]);
 
     const handleKeydown = React.useCallback((event: KeyboardEvent) => {

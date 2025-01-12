@@ -43,6 +43,7 @@ export const getTypingThemeResolver = async(args: {id: number, level: number, di
     if (!row) {
         throw new Error("No typing theme found for the given parameters.");
     }
+    console.log(`query result: ${JSON.stringify(row)}`);
     const moras: Mora[] = await toTokens({ text: row.text, ruby: row.ruby });
     const withStatus: MoraWithStatus[] = toMoraWithStatus(moras);
     return { id: row.id, text: row.text, ruby: row.ruby, moras: JSON.stringify(withStatus) };

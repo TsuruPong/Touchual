@@ -1,37 +1,54 @@
 import * as React from "react";
 
-export const useIndicator = (
-    total: number,
-    correct: number,
-    incorrect: number,
-    time: number
-) => {
-    const wpm = React.useCallback(() => {
-        return (total / 5) / (time / 60);
+export const useIndicator = () => {
+    const calcWpm = React.useCallback((correct: number, time: number): number => {
+        return Math.round((correct / 5) / (time / 60) * 100) / 100;
     }, []);
 
-    const acc = React.useCallback(() => {
-        return (correct / total) * 100;
+    const calcAcc = React.useCallback((total: number, correct: number): number => {
+        return Math.round((correct / total) * 100 * 100) / 100;
     }, []);
 
-    const calcProgress = (currentLevel: number, currentDifficulty: number): { level: number, difficulty: number } => {
+    const calcProgress = React.useCallback((
+        currentLevel: number, currentDifficulty: number, indicator: { total: number , correct: number, incorrect: number, time: number }
+    ): { level: number, difficulty: number } => {
+        const wpm: number = calcWpm(indicator.correct, indicator.time);
+        const acc: number = calcAcc(indicator.total, indicator.correct);
+        const increaseCoef = calcIncreaseCoef(wpm, acc);
+        const decreaseCoef = calcDecreaseCoef(indicator.incorrect);
         let level: number = currentLevel;
-        let difficulty: number = calcDifficulty(currentDifficulty);
-    
+        let difficulty: number = calcDifficulty(currentDifficulty, increaseCoef, decreaseCoef);
         if (difficulty >= 1.0) {
-            level += Math.floor(difficulty);
-            difficulty = difficulty % 1.0;
+            level++;
+            difficulty = Math.round((difficulty % 1) * 10) / 10;
         }
-
+        
+        console.log(`current level:      ${currentLevel}`);
+        console.log(`current difficulty: ${currentDifficulty}`);
+        console.log(`indicator:          ${JSON.stringify(indicator)}`);
+        console.log(`wpm:                ${wpm}`);
+        console.log(`acc:                ${acc}`);
+        console.log(`inc:                ${increaseCoef}`);
+        console.log(`dec:                ${decreaseCoef}`);
+        console.log(`next level:         ${level}`);
+        console.log(`next difficulty:    ${difficulty}`);
+        
         return { level, difficulty };
+    }, []);
+
+    const calcDifficulty = (currentDifficulty: number, incCoef: number, decCoef: number): number => {
+        const calc = Math.round((currentDifficulty + (incCoef * 0.75) - decCoef) * 100) / 100;
+        return Number.isNaN(calc) ? 0 : calc;
     }
 
-    const calcDifficulty = (currentDifficulty: number): number => {
-        const growCoef = (wpm() * acc()) / 1000;
+    const calcIncreaseCoef = React.useCallback((wpm: number, acc: number): number => {
+        return Math.round(((wpm * acc) / 1000) * 100) / 100;
+    }, []);
+
+    const calcDecreaseCoef = React.useCallback((incorrect: number): number => {
         const decrease = 0.05;
-        const missCoef = incorrect * decrease;
-        return currentDifficulty + (growCoef * 0.1) - missCoef
-    }
+        return Math.round((incorrect * decrease) * 100) / 100;
+    }, [])
 
-    return { wpm, acc, calcProgress };
+    return { calcWpm, calcAcc, calcProgress };
 }
