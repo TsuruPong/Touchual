@@ -6,10 +6,11 @@ import { useKeyboardInput } from "@/hooks/useKeyboardInput";
 import { useIndicator } from "./hook/useIndicator";
 import { InGamePresentation } from "../presentation";
 import { TimerKind, useTimer } from "@/hooks/useTimer";
-import { useMoraHandler } from "./hook/useMoraHandler";
-import { useTypingHandler } from "./hook/useTypingHandler";
 import { useTypingTheme } from "./hook/useTypingTheme";
 import { useTypingThemeStore } from "./hook/useTypingThemeStore";
+import { useTypingCounter } from "./hook/typing/useTypingCounter";
+import { useTypingHandler } from "./hook/typing/useTypingHandler";
+import { useAutoCompleate } from "./hook/useAutoCompleate";
 
 export const InGameContainer: React.FC = () => {
     const router = useRouter();
@@ -30,15 +31,14 @@ export const InGameContainer: React.FC = () => {
         (state) => state.updateMoras
     );
 
-    const moraHandler = useMoraHandler();
-    const typingHandler = useTypingHandler(
-        moraHandler.updator.updateCorrect,
-        moraHandler.updator.updateIncorrect
-    );
     const { time, start, stop } = useTimer(TimerKind.SUB, 60);
     const { calcWpm, calcAcc, calcProgress } = useIndicator();
     const [level, setLevel] = React.useState<number>(1);
     const [difficulty, setDifficulty] = React.useState<number>(0);
+
+    const { general, present } = useTypingCounter();
+    const { handleTyping } = useTypingHandler();
+    const { toAutoCompleate } = useAutoCompleate();
 
     const fetchCurrectTypingTheme = async (
         level: number,
@@ -60,9 +60,9 @@ export const InGameContainer: React.FC = () => {
     React.useEffect(() => {
         if (!shouldFetch) return;
         const indicator = {
-            total: typingHandler.counts.totals.total,
-            correct: typingHandler.counts.presents.correct,
-            incorrect: typingHandler.counts.presents.incorrect,
+            total: general.total.count,
+            correct: present.correct.count,
+            incorrect: present.incorrect.count,
             time,
         };
         const progress = calcProgress(level, difficulty, indicator);
@@ -73,16 +73,15 @@ export const InGameContainer: React.FC = () => {
         );
         setLevel(() => progress.level);
         setDifficulty(() => progress.difficulty);
-        typingHandler.counts.presents.resetCounts();
-        typingHandler.timer.presents.reset();
-        typingHandler.timer.presents.start();
+        present.correct.reset();
+        present.incorrect.reset();
     }, [shouldFetch]);
 
     const handleKeydown = React.useCallback((event: KeyboardEvent) => {
         if (event.key == "Escape") {
             backward();
         }
-        typingHandler.handleTyping(event);
+        handleTyping(event);
     }, []);
 
     useKeyboardInput(handleKeydown);
@@ -107,9 +106,7 @@ export const InGameContainer: React.FC = () => {
     return (
         <InGamePresentation
             sentence={{ text: typingThemeText, ruby: typingThemeRuby }}
-            autocompleates={moraHandler.converter.toAutoCompleate(
-                typingThemeMoras
-            )}
+            autocompleates={toAutoCompleate(typingThemeMoras)}
             time={time}
         />
     );
