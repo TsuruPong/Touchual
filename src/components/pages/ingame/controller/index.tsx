@@ -92,7 +92,7 @@ export const InGameContainer: React.FC = () => {
     );
 
     const forward = React.useCallback(() => {
-        //router.push("/result");
+        router.push("/result");
     }, [router]);
 
     const backward = React.useCallback(() => {
