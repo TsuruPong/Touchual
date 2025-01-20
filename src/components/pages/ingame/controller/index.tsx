@@ -66,7 +66,11 @@ export const InGameContainer: React.FC = () => {
             time,
         };
         const progress = calcProgress(level, difficulty, indicator);
-        fetchCurrectTypingTheme(2, 0.1, typingThemeId);
+        fetchCurrectTypingTheme(
+            progress.level,
+            progress.difficulty,
+            typingThemeId
+        );
         setLevel(() => progress.level);
         setDifficulty(() => progress.difficulty);
         present.correct.reset();
