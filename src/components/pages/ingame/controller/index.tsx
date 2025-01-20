@@ -66,11 +66,7 @@ export const InGameContainer: React.FC = () => {
             time,
         };
         const progress = calcProgress(level, difficulty, indicator);
-        fetchCurrectTypingTheme(
-            progress.level,
-            progress.difficulty,
-            typingThemeId
-        );
+        fetchCurrectTypingTheme(2, 0.1, typingThemeId);
         setLevel(() => progress.level);
         setDifficulty(() => progress.difficulty);
         present.correct.reset();
@@ -85,6 +81,11 @@ export const InGameContainer: React.FC = () => {
     }, []);
 
     useKeyboardInput(handleKeydown);
+
+    const autocompleate = React.useMemo(
+        () => toAutoCompleate(typingThemeMoras),
+        [typingThemeMoras]
+    );
 
     const forward = React.useCallback(() => {
         //router.push("/result");
@@ -106,7 +107,7 @@ export const InGameContainer: React.FC = () => {
     return (
         <InGamePresentation
             sentence={{ text: typingThemeText, ruby: typingThemeRuby }}
-            autocompleates={toAutoCompleate(typingThemeMoras)}
+            autocompleates={autocompleate}
             time={time}
         />
     );

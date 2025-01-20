@@ -5,10 +5,17 @@ export const useTypingValidator = () => {
         const targetMora = moras.find(mora => mora.status != "correct");
         if (!targetMora?.node) throw new Error("illegal parameter");
         const targetMoraNodes = findTargetMoraNodeRecursively(targetMora.node);
-        const prevMora = moras.find(mora => mora.pos = targetMora.pos - 1);
+        const prevMora = moras.find(mora => mora.pos == targetMora.pos - 1);
         if (prevMora?.from == "っ" && isShortConsonant(prevMora.node)) {
             const symbom = getShortConsonantSymbol(prevMora.node);
             return input == symbom.val == targetMoraNodes.some(moranode => moranode.val == input);
+        }
+        if (targetMora.from == "ん") {
+            const nextMora = moras.find(mora => mora.pos == targetMora.pos + 1);
+            if (nextMora) {
+                const nextMoraNodes = findTargetMoraNodeRecursively(nextMora.node);
+                return targetMoraNodes.some(moranode => moranode.val == input) || nextMoraNodes.some(moranode => moranode.val == input)
+            }
         }
         return targetMoraNodes.some(moranode => moranode.val == input);
     }
